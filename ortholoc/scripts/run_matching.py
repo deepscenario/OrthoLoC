@@ -63,9 +63,7 @@ def run_matching(matcher_name: str, img0_path: str | None = None, img1_path: str
                                        show=show)
 
     if output_path is not None:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        fig.savefig(output_path)
-
+        utils.io.save_fig(fig, output_path)
 
 def parse_args():
     argparser = argparse.ArgumentParser(description='Run matching')
@@ -97,7 +95,7 @@ def parse_args():
         'used to filter matchings below this value. Default= 0.5', default=0.5)
     argparser.add_argument('--plot_max_pts', type=int, help='Max number of matchings to visualize', dest='max_pts',
                            default=1000)
-    argparser.add_argument('--output_dir', type=str, help='Output directory')
+    argparser.add_argument('--output_path', type=str, required=False, help='Output path to save the plot')
     return utils.misc.update_args_with_asset_paths(argparser.parse_args())
 
 

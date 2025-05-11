@@ -23,8 +23,7 @@ def visualize_sample(
     fig.subplots_adjust(wspace=0.2, hspace=0.2)
 
     if output_path is not None:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        fig.savefig(output_path)
+        utils.io.save_fig(fig, output_path)
 
 
 def parse_args():

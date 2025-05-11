@@ -18,6 +18,9 @@ from ortholoc.correspondences import Correspondences2D2D
 
 
 class OrthoLoC(Dataset):
+
+    URL = 'https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/'
+
     def __init__(self, dirpath: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
                  end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0,
                  new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
@@ -45,7 +48,7 @@ class OrthoLoC(Dataset):
                 2: only samples with different DOP domain only
                 3: only samples with different DOP and DSM domains
         """
-        assert mode in (0, 1, 2, 3)
+        assert mode in (0, 1, 2, 3), 'Mode should be 0, 1, 2 or 3'
 
         assert (dirpath is not None) ^ (sample_paths is not None), 'Either dirpath or sample_paths should be provided'
         assert (new_size is not None) ^ (scale_query_image
@@ -58,6 +61,11 @@ class OrthoLoC(Dataset):
         if sample_paths is not None:
             for i, sample_path in enumerate(sample_paths):
                 sample_paths[i] = utils.misc.resolve_asset_path(sample_path, verbose=False)
+
+        if dirpath == 'dataset_sample':
+            dirpath = os.path.join(os.path.dirname(__file__), 'dataset_sample')
+            utils.misc.download_files(url = os.path.join(OrthoLoC.URL, 'dataset_sample'),  save_directory = dirpath,
+                                                            pattern=r".*\.npz$")
 
         self.name = os.path.basename(dirpath) if dirpath else ''
         self.dirpath = dirpath

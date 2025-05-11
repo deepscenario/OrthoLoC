@@ -24,7 +24,8 @@ dependencies = [
   "opencv-python",
   "torchvision",
   "tueplots",
-  "packaging"
+  "packaging",
+  "beautifulsoup4"
 ]
 
 [project.scripts]

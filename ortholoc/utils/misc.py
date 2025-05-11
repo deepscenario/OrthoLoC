@@ -11,6 +11,7 @@ import importlib.resources
 import importlib.util
 from loguru import logger
 import os
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -198,47 +199,52 @@ def download_file(url: str, save_path: str) -> None:
         with open(save_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=1024):
                 file.write(chunk)
-        print(f"Downloaded: {save_path}")
+        logger.info(f"Downloaded: {save_path}")
     else:
-        print(f"Failed to download: {url}")
+        logger.info(f"Failed to download: {url}")
 
 
-def get_file_links(apache_url: str, extensions: list[str]) -> list[str]:
+def get_file_links(url: str, pattern: str) -> list[str]:
     """
-    Fetches the file links from an Apache directory listing, filtering by file extensions.
+    Fetches the file links from an Apache directory listing, filtering by a regex pattern.
 
     Args:
-        apache_url (str): The URL of the Apache directory.
-        extensions (list[str]): A list of file extensions to filter by (e.g., ['.zip', '.npz']).
+        url (str): The URL of the Apache directory.
+        pattern (str): A regex pattern to filter file names (e.g., r'^train_.*\.zip$').
 
     Returns:
-        list[str]: A list of file URLs matching the specified extensions.
+        list[str]: A list of file URLs matching the regex pattern.
     """
-    response = requests.get(apache_url)
+    response = requests.get(url)
     if response.status_code != 200:
-        print(f"Failed to access {apache_url}")
+        logger.info(f"Failed to access {url}")
         return []
 
     soup = BeautifulSoup(response.text, 'html.parser')
     links = [link.get('href') for link in soup.find_all('a') if link.get('href')]
-    # Filter files by extensions
-    return [f"{apache_url.rstrip('/')}/{href}" for href in links if any(href.endswith(ext) for ext in extensions)]
+    regex = re.compile(pattern)
+
+    return [
+        f"{url.rstrip('/')}/{href}"
+        for href in links
+        if regex.match(href)
+    ]
 
 
-def download_files_from_apache_directory(apache_url: str, save_directory: str, extensions: list[str]) -> None:
+def download_files(url: str, save_directory: str, pattern: str) -> None:
     """
-    Downloads files from an Apache directory, filtered by extensions.
+    Downloads files from an Apache directory, filtered by a regex pattern.
 
     Args:
-        apache_url (str): The URL of the Apache directory.
+        url (str): The URL of the Apache directory.
         save_directory (str): The local directory to save the downloaded files.
-        extensions (list[str]): A list of file extensions to filter by (e.g., ['.zip', '.npz']).
+        pattern (str): A regex pattern to filter file names (e.g., r'^train_.*\.zip$').
     """
     os.makedirs(save_directory, exist_ok=True)
-    file_links = get_file_links(apache_url, extensions)
+    file_links = get_file_links(url, pattern)
 
     if not file_links:
-        print("No files found matching the specified extensions.")
+        logger.info("No files found matching the specified pattern.")
         return
 
     for file_url in file_links:
