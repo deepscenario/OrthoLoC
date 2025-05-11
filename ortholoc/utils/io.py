@@ -2,11 +2,22 @@ from __future__ import annotations
 
 import numpy as np
 import cv2
-import os
 import rasterio
 import json
 from matplotlib import pyplot as plt
+import os
+import re
+import requests
+from bs4 import BeautifulSoup
+from tqdm import tqdm
+from loguru import logger
+from pathlib import Path
+import importlib.resources
+import importlib.util
+from appdirs import user_cache_dir
 
+DATASET_URL = 'https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/'
+CACHE_DIR = os.environ.get('ORTHOLOC_CACHE_DIR', user_cache_dir('ortholoc'))
 
 #################################
 # I/O
@@ -101,6 +112,8 @@ def load_image(path: str, grayscale: bool = False) -> np.ndarray:
     Raises:
         ValueError: If the image could not be loaded.
     """
+    path = resolve_path(path, verbose=False)
+    assert os.path.exists(path), f"Image path does not exist: {path}"
     if grayscale:
         image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     else:
@@ -108,6 +121,14 @@ def load_image(path: str, grayscale: bool = False) -> np.ndarray:
     if image is None:
         raise ValueError(f"Could not load image from {path}")
     return image
+
+def load_npz(path: str) -> dict:
+    """
+    Load data from a compressed NPZ file.
+    """
+    path = resolve_path(path, verbose=False)
+    assert os.path.exists(path), f"NPZ path does not exist: {path}"
+    return np.load(path, allow_pickle=True)
 
 
 def load_tif(path: str, get_coords: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray | None]:
@@ -230,7 +251,7 @@ def load_json(path: str) -> dict:
     return data
 
 
-def save_fig(fig: plt.Figure, path: str, dpi: int = 100) -> None:
+def save_fig(fig: plt.Figure, path: str, dpi: int = 100,  bbox_inches='tight', *args, **kwargs) -> None:
     """
     Save a matplotlib figure to a file.
 
@@ -241,8 +262,8 @@ def save_fig(fig: plt.Figure, path: str, dpi: int = 100) -> None:
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
     plt.tight_layout()
-    fig.savefig(path, bbox_inches='tight', dpi=dpi)
-    plt.close(fig)
+    fig.savefig(path, dpi=dpi, *args, **kwargs)
+    plt.close()
 
 
 def save_camera_params(pose_w2c: np.ndarray | None, intrinsics: np.ndarray | None, path: str) -> None:
@@ -276,3 +297,144 @@ def load_camera_params(path: str) -> tuple[np.ndarray | None, np.ndarray | None]
     pose_w2c = np.array(data['pose_w2c']) if 'pose_w2c' in data and data['pose_w2c'] is not None else None
     intrinsics = np.array(data['intrinsics']) if 'intrinsics' in data and data['intrinsics'] is not None else None
     return pose_w2c, intrinsics
+
+
+
+def resolve_path(input_path: str | Path, verbose: bool = True) -> str | None:
+    local_path = None
+    if input_path.startswith("http"):
+        rel_dir = input_path.removeprefix(DATASET_URL).removeprefix("/")
+        local_path = os.path.join(CACHE_DIR, rel_dir)
+        if os.path.splitext(input_path)[1] == "":
+            local_path = download_files(input_path, local_path, pattern = r"^.*\.npz$", verbose = verbose)
+        else:
+            local_path = download_file(input_path, local_path)
+    if local_path is None:
+        local_path = resolve_asset_path(input_path, verbose=verbose)
+        if local_path is None:
+            local_path = os.path.join(CACHE_DIR, input_path)
+            input_path_tmp = os.path.join(DATASET_URL, input_path)
+            if os.path.splitext(input_path)[1] == "":
+                download_files(input_path_tmp, local_path, pattern=r"^.*\.npz$")
+            else:
+                download_file(input_path_tmp, local_path)
+        return local_path if os.path.exists(local_path) else input_path
+    return local_path
+
+
+def resolve_asset_path(input_path: str | Path, verbose: bool = True) -> Path | None:
+    """
+    Resolve a path by checking if it exists, if not, try to find it in package assets.
+
+    Args:
+        input_path: Original path provided
+        asset_folder: Subfolder in assets to look for the file
+        verbose: Whether to print info about path resolution
+
+    Returns:
+        Resolved Path object or None if not found
+    """
+    # Convert input to Path object
+    input_path = Path(input_path)
+
+    # If path exists, return it
+    if input_path.exists():
+        if verbose:
+            logger.info(f"Using provided path: {input_path}")
+        return input_path
+
+    # Try to find in assets
+    try:
+        lib_path = Path(next(iter(importlib.util.find_spec("ortholoc").submodule_search_locations)))
+        asset_path = lib_path / input_path
+        if asset_path.exists():
+            if verbose:
+                logger.info(f"Found in assets: {asset_path}")
+            return asset_path
+    except Exception as e:
+        if verbose:
+            logger.info(f"Error accessing assets: {e}")
+
+    return None
+
+
+def download_file(url: str, save_path: str, verbose = True) -> str | None:
+    """
+    Downloads a file from a given URL and saves it to the specified path.
+
+    Args:
+        url (str): The URL of the file to download.
+        save_path (str): The local path to save the file.
+    """
+    if os.path.exists(save_path):
+        return save_path
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=1024):
+                file.write(chunk)
+        if verbose:
+            logger.info(f"Downloaded: {save_path}")
+        return save_path
+    else:
+        if verbose:
+            logger.info(f"Failed to download: {url}")
+        return None
+
+
+def get_file_links(url: str, pattern: str) -> list[str]:
+    """
+    Fetches the file links from an Apache directory listing, filtering by a regex pattern.
+
+    Args:
+        url (str): The URL of the Apache directory.
+        pattern (str): A regex pattern to filter file names.
+
+    Returns:
+        list[str]: A list of file URLs matching the regex pattern.
+    """
+    response = requests.get(url)
+    if response.status_code != 200:
+        logger.info(f"Failed to access {url}")
+        return []
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    links = [link.get('href') for link in soup.find_all('a') if link.get('href')]
+    regex = re.compile(pattern)
+
+    return [
+        f"{url.rstrip('/')}/{href}"
+        for href in links
+        if regex.match(href)
+    ]
+
+
+def download_files(url: str, save_directory: str, pattern: str, verbose: bool = True) -> str | None:
+    """
+    Downloads files from an Apache directory, filtered by a regex pattern.
+
+    Args:
+        url (str): The URL of the Apache directory.
+        save_directory (str): The local directory to save the downloaded files.
+        pattern (str): A regex pattern to filter file names.
+    """
+    os.makedirs(save_directory, exist_ok=True)
+    file_links = get_file_links(url, pattern)
+
+    if not file_links:
+        logger.info("No files found matching the specified pattern.")
+        return save_directory
+    pbar = tqdm(file_links, desc="Downloading files")
+    output_paths = []
+    for file_url in pbar:
+        file_name = os.path.basename(file_url)
+        save_path = os.path.join(save_directory, file_name)
+        if os.path.exists(save_path):
+            continue
+        output_path = download_file(file_url, save_path, verbose = verbose)
+        if output_path is None:
+            logger.warning(f"Failed to download: {file_url}")
+        pbar.set_postfix_str(f"Downloaded: {file_name}")
+        output_paths.append(output_path)
+    return save_directory if any(output_paths) else None

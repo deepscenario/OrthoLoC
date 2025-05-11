@@ -86,7 +86,7 @@ def parse_args():
         'dataset will be considered.', default=1.0)
     argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
                            choices=['cuda', 'cpu'])
-    return utils.misc.update_args_with_asset_paths(argparser.parse_args())
+    return argparser.parse_args()
 
 def main():
     args = parse_args()

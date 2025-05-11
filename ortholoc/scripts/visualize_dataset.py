@@ -88,7 +88,7 @@ def parse_args():
     argparser.add_argument('--select_good_samples', action='store_true', help='Select samples with good coverage')
     argparser.add_argument('--with_title', action='store_true', help='Add title to the plot')
     argparser.add_argument('--output_path', type=str, required=False, help='Output path to save the plot')
-    return utils.misc.update_args_with_asset_paths(argparser.parse_args())
+    return argparser.parse_args()
 
 
 def main():

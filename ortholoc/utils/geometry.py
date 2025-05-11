@@ -203,22 +203,6 @@ def compute_dist(grid3d_0: np.ndarray, grid3d_1: np.ndarray, correspondences_2d2
     return np.linalg.norm(pts3d_0 - pts3d_1, axis=-1)
 
 
-def plot_map(array: np.ndarray) -> None:
-    """
-    Plot a 2D array as an image.
-
-    Args:
-        array: 2D numpy array to be plotted.
-
-    Returns:
-        None
-    """
-    fig, ax = plt.subplots()
-    ax.imshow(array)
-    ax.axis('off')
-    plt.show()
-
-
 def create_grid_pts2d(w: int, h: int, normalized: bool = False) -> np.ndarray:
     """
     Create a 2D grid of points.
@@ -392,7 +376,7 @@ def crop_rasters(point_map: np.ndarray, dsm: np.ndarray, dop: np.ndarray, covisi
             handles.append(mpatches.Patch(color='red', label=f'{int(covisibility_ratio * 100)}% Covisibility'))
         handles.append(mpatches.Patch(color='yellow', label='Visible Region in DOP and DSM'))
         ax.legend(handles=handles, loc='lower right', fontsize=10)
-        fig.show()
+        plt.show()
 
     final_covisbility_ratio = np.sum(point_map_in_dsm_mask) / max_visibility
 

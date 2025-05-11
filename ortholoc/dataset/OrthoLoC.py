@@ -19,13 +19,12 @@ from ortholoc.correspondences import Correspondences2D2D
 
 class OrthoLoC(Dataset):
 
-    URL = 'https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/'
-
     def __init__(self, dirpath: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
-                 end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0,
+                 end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0, set_name: str = 'all',
                  new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
                  scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
-                 covisibility_ratio: float = 1.0, return_tensor: bool = True) -> None:
+                 covisibility_ratio: float = 1.0, return_tensor: bool = True,
+                 predownload: bool = False) -> None:
         """
         Args:
             dirpath: path to the directory containing the samples
@@ -41,32 +40,52 @@ class OrthoLoC(Dataset):
             scale_dop_dsm: scale factor for the DOP and DSM images
             gt_matching_confidences_decay: decay factor for the matching confidences
             covisibility_ratio: ratio of the covisible area to keep
+            set_name: all, train, val, test_inPlace, test_outPlace in case no specific sample_paths or dataset path is provided
             return_tensor: return the images as tensors
             mode: mode for loading the samples
-                0: all samples with different DOP and DSM domains
-                1: all samples with different DOP domain only
+                0: all samples
+                1: all samples with same domain
                 2: only samples with different DOP domain only
                 3: only samples with different DOP and DSM domains
+            predownload: bool, if True, download the samples while constructing the dataset object
         """
         assert mode in (0, 1, 2, 3), 'Mode should be 0, 1, 2 or 3'
 
-        assert (dirpath is not None) ^ (sample_paths is not None), 'Either dirpath or sample_paths should be provided'
+        if dirpath is not None:
+            assert sample_paths is None, 'Either dirpath or sample_paths should be provided'
+        if sample_paths is not None:
+            assert dirpath is None, 'Either dirpath or sample_paths should be provided'
+
+        if set_name is not None:
+            assert sample_paths is None, 'set_name should not be used with sample_paths'
+
+        if dirpath is None and sample_paths is None:
+            dirpath = os.path.join(utils.io.DATASET_URL, 'full')
+
+        if dirpath is not None and set_name is not None and set_name != 'all':
+            dirpath = os.path.join(dirpath, set_name)
+
+        if dirpath is not None:
+            sample_paths = []
+            for setname in ('train', 'val', 'test_inPlace', 'test_outPlace') if set_name == 'all' else (set_name,):
+                setpath = os.path.join(dirpath, setname)
+                if os.path.exists(setpath):
+                    sample_paths += utils.io.find_files(setpath, suffix='.npz', recursive=True)
+                else:
+                    sample_paths += utils.io.get_file_links(setpath, pattern=r"^.*\.npz$")
+            sample_paths = sorted(sample_paths)
+
         assert (new_size is not None) ^ (scale_query_image
                                          is not None), 'Either new_size or scale_query_image should be provided'
         assert (new_size is not None) ^ (scale_dop_dsm
                                          is not None), 'Either new_size or scale_dop_dsm should be provided'
 
-        if dirpath is not None:
-            dirpath = utils.misc.resolve_asset_path(dirpath, verbose=False)
-        if sample_paths is not None:
+        assert len(sample_paths) > 0, f'No samples found in {dirpath}' if dirpath else 'No samples provided'
+        if predownload:
             for i, sample_path in enumerate(sample_paths):
-                sample_paths[i] = utils.misc.resolve_asset_path(sample_path, verbose=False)
+                sample_paths[i] = utils.io.resolve_path(sample_path, verbose=False)
 
-        if dirpath == 'dataset_sample':
-            dirpath = os.path.join(os.path.dirname(__file__), 'dataset_sample')
-            utils.misc.download_files(url = os.path.join(OrthoLoC.URL, 'dataset_sample'),  save_directory = dirpath,
-                                                            pattern=r".*\.npz$")
-
+        self.files = sample_paths
         self.name = os.path.basename(dirpath) if dirpath else ''
         self.dirpath = dirpath
         self.return_tensor = return_tensor
@@ -79,11 +98,6 @@ class OrthoLoC(Dataset):
         assert covisibility_ratio <= 1.0, 'Covisibility ratio should be between 0 and 1'
         assert start < end
         random.seed(seed)
-        if dirpath is not None:
-            assert os.path.exists(dirpath), f'Directory {dirpath} does not exist'
-            self.files = sorted(utils.io.find_files(dirpath, suffix='.npz', recursive=True))
-        else:
-            self.files = sample_paths
         if mode == 1:
             self.files = list(filter(lambda f: 'R' in f, self.files))
         elif mode == 2:
@@ -175,10 +189,10 @@ class OrthoLoC(Dataset):
 
     @staticmethod
     def get_correspondences_2d2d(
-        sample: dict,
-        normalized: bool = False,
-        covisible_only=False,
-        sampling_pts2d: np.ndarray | None = None,
+            sample: dict,
+            normalized: bool = False,
+            covisible_only=False,
+            sampling_pts2d: np.ndarray | None = None,
     ) -> Correspondences2D2D:
         """
         Compute the GT 2D-2D correspondences between the query and DOP images.
@@ -237,7 +251,7 @@ class OrthoLoC(Dataset):
         """
         file_path = self.files[idx]
         try:
-            data = np.load(file_path)
+            data = utils.io.load_npz(file_path)
             image_query = data['image_query']
             if np.all(image_query == 0):
                 if file_path in self.files:
@@ -388,16 +402,9 @@ class OrthoLoC(Dataset):
             torch.from_numpy(array).permute(2, 0, 1), size, align_corners=align_corners, mode=mode).permute(1, 2,
                                                                                                             0).numpy()
 
-    @staticmethod
-    def points_map_to_depth(points_map: np.ndarray, pose_c2w: np.ndarray) -> np.ndarray:
-        """
-        Convert a point map to a depth map using the camera pose.
-        """
-        pose_world2query = np.linalg.inv(np.concatenate([pose_c2w, np.array([[0, 0, 0, 1]])], axis=0))
-        pts3d = points_map.reshape((-1, 3))
-        pts3d_hom = np.concatenate([pts3d, np.ones((pts3d.shape[0], 1))], axis=1)
-        scm_c = (pose_world2query @ pts3d_hom.T).T[:, :3]
-        return scm_c.reshape(points_map.shape)[:, :, 2].astype(np.float32)
+    def __iter__(self) -> iter:
+        for idx in range(len(self)):
+            yield self[idx]
 
     def __getitem__(self, idx: int) -> dict:
         if self.overfitting_mode and hasattr(self, 'overfitting_data'):
@@ -419,8 +426,10 @@ class OrthoLoC(Dataset):
 
         data_dict = {}
         for k, v in data.items():
-            if k.startswith('I_'):
+            if k.startswith('image_'):
                 data_dict[k] = functional.to_tensor(v)
+            elif isinstance(v, str) or isinstance(v, np.ndarray) and np.issubdtype(v.dtype, np.str_):
+                data_dict[k] = str(v)
             elif isinstance(v, np.ndarray):
                 data_dict[k] = torch.from_numpy(v.astype(np.float32))
             else:

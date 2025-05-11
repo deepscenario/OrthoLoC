@@ -232,3 +232,21 @@ def plot_reprojections(image_query, pts3d, pose_c2w_pred: np.ndarray, pose_c2w_g
         plt.show()
 
     return fig, ax
+
+def plot_map(array: np.ndarray, show: bool = True,
+             ax: plt.Axes | None = None,
+             colormap: str = 'viridis') -> tuple[plt.Figure, plt.Axes]:
+    """
+    Plot a 2D array as an image.
+
+    Args:
+        array: 2D numpy array to be plotted.
+    """
+    if ax is None:
+        _, ax = plt.subplots(1, 1, figsize=(6, 6))
+    fig = ax.figure
+    ax.imshow(array, cmap=colormap)
+    ax.axis('off')
+    if show:
+        plt.show()
+    return fig, ax

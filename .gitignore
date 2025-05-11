@@ -18,3 +18,4 @@ log.txt
 internal/
 .aux.xml
 __pycache__/
+*outputs/

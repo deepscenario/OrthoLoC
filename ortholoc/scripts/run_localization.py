@@ -167,7 +167,6 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                                 os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors_init' + fig_ext))
 
                             # reprojection plot
-                            title = ''
                             fig_reproj, _ = utils.plot.plot_reprojections(
                                 image_query, pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred,
                                 pose_c2w_gt=pose_c2w_gt, intrinsics_matrix_pred=intrinsics_matrix_pred, title=title,
@@ -241,12 +240,11 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                     fig_matching_errors, _ = utils.plot.plot_pts2d(
                         utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0, w=w0), image_query,
                         show_colorbar=True, alpha=0.5, s=1, metrics={'ME': (matching_error, 'px')},
-                        heatmap=matching_errors, show=True, colorbar_label='ME (px)')
+                        title=title, heatmap=matching_errors, show=True, colorbar_label='ME (px)')
                     utils.io.save_fig(fig_matching_errors,
                                       os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
 
                     # reprojection plot
-                    title = ''
                     fig_reproj, _ = utils.plot.plot_reprojections(
                         image_query, pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred, pose_c2w_gt=pose_c2w_gt,
                         intrinsics_matrix_pred=intrinsics_matrix_pred, title=title, metrics={
@@ -265,8 +263,8 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                                                 path=os.path.join(output_dir, 'camera_params.json'))
 
                 logger.info(f'Localization successful')
-                logger.info(f'Pose (world to cam): {utils.pose.inv_pose(pose_c2w_pred)}')
-                logger.info(f'Intrinsics: {intrinsics_matrix_pred}')
+                logger.info(f'\nPose (world to cam):\n{utils.pose.inv_pose(pose_c2w_pred)}')
+                logger.info(f'\nIntrinsics:\n{intrinsics_matrix_pred}')
 
         else:
             logger.warning("Localization failed")
@@ -332,7 +330,7 @@ def parse_args():
         if sum(bool(opt) for opt in image_options) != 3:
             argparser.error("You must specify exactly --image, --dop, and --dsm when --sample is not provided.")
 
-    return utils.misc.update_args_with_asset_paths(args)
+    return args
 
 
 def main():

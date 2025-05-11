@@ -25,7 +25,8 @@ dependencies = [
   "torchvision",
   "tueplots",
   "packaging",
-  "beautifulsoup4"
+  "beautifulsoup4",
+  "appdirs"
 ]
 
 [project.scripts]

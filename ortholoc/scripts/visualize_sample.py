@@ -34,7 +34,7 @@ def parse_args():
     argparser.add_argument('--show', action='store_true', help='Show the plot')
     argparser.add_argument('--no_title', action='store_true', help='Without title')
     argparser.add_argument('--output_path', type=str, required=False, help='Output path to save the plot')
-    return utils.misc.update_args_with_asset_paths(argparser.parse_args())
+    return argparser.parse_args()
 
 
 def main():

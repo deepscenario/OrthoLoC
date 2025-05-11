@@ -65,14 +65,15 @@ def run_matching(matcher_name: str, img0_path: str | None = None, img1_path: str
     if output_path is not None:
         utils.io.save_fig(fig, output_path)
 
+
 def parse_args():
     argparser = argparse.ArgumentParser(description='Run matching')
     # inputs
-    group = argparser.add_mutually_exclusive_group(required=True)
-    image_group = group.add_argument_group()
-    image_group.add_argument('--img0', type=str, help='Path of the first image', dest='img0_path')
-    image_group.add_argument('--img2', type=str, help='Path of the second image', dest='img1_path')
-    group.add_argument('--sample', type=str, help='Sample path .npz', dest='sample_path')
+    argparser.add_argument('--img0', type=str, help='Path of the first image (also supports .tif files)',
+                           dest='img0_path')
+    argparser.add_argument('--img1', type=str, help='Path of the second image (also supports .tif files)',
+                           dest='img1_path')
+    argparser.add_argument('--sample', type=str, help='Sample path .npz', dest='sample_path')
 
     argparser.add_argument('--matcher', type=str, help='Matcher name', required=True,
                            choices=['GT'] + list(MATCHER_ZOO.keys()), dest='matcher_name')
@@ -81,10 +82,10 @@ def parse_args():
         nargs='+',
         type=int,
         help='This rotates the query image before '
-        'matching and take the best rotation results as the '
-        'final correspondences. If not defined, default '
-        'rotation values will be considered depending on '
-        'the matcher used.',
+             'matching and take the best rotation results as the '
+             'final correspondences. If not defined, default '
+             'rotation values will be considered depending on '
+             'the matcher used.',
     )
     argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
                            choices=['cuda', 'cpu'])
@@ -92,16 +93,24 @@ def parse_args():
     argparser.add_argument('--use_adhop', action='store_true', help='Use Homography Preconditioning')
     argparser.add_argument(
         '--min_conf', type=float, help='Minimum correspondences confidences will be '
-        'used to filter matchings below this value. Default= 0.5', default=0.5)
+                                       'used to filter matchings below this value. Default= 0.5', default=0.5)
     argparser.add_argument('--plot_max_pts', type=int, help='Max number of matchings to visualize', dest='max_pts',
                            default=1000)
     argparser.add_argument('--output_path', type=str, required=False, help='Output path to save the plot')
-    return utils.misc.update_args_with_asset_paths(argparser.parse_args())
+
+    args = argparser.parse_args()
+
+    if not args.sample_path:
+        if not ((args.img0_path is not None and args.img1_path is not None) or args.sample_path is not None):
+            argparser.error("You must specify either --img0 and --img1 or --sample")
+
+    return args
 
 
 def main():
     args = parse_args()
     run_matching(**vars(args))
+
 
 if __name__ == '__main__':
     main()
