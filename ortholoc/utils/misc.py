@@ -8,6 +8,7 @@ import psutil
 import argparse
 from pathlib import Path
 import importlib.resources
+import importlib.util
 from loguru import logger
 
 def get_git_commit_id() -> str | None:
@@ -126,11 +127,12 @@ def resolve_asset_path(
 
     # Try to find in assets
     try:
-        with importlib.resources.files(f'ortholoc').joinpath(str(input_path)) as asset_path:
-            if asset_path.exists():
-                if verbose:
-                    logger.info(f"Found in assets: {asset_path}")
-                return asset_path
+        lib_path = Path(next(iter(importlib.util.find_spec("ortholoc").submodule_search_locations)))
+        asset_path = lib_path / input_path
+        if asset_path.exists():
+            if verbose:
+                logger.info(f"Found in assets: {asset_path}")
+            return asset_path
     except Exception as e:
         if verbose:
             logger.info(f"Error accessing assets: {e}")

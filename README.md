@@ -185,7 +185,7 @@ All the weights for matching algorithms will be downloaded automatically.
 To run the image matching from a sample of the dataset or from two images, you can do the following:
 ```
 run-matching \
-    --sample assets/urban.npz --matcher superpoint+lightglue --device cuda --angles 0 90 180 270 --show  
+    --sample assets/samples/highway_rural.npz --matcher superpoint+lightglue --device cuda --angles 0 90 180 270 --show  
 ```
 <a name="Localization-and-Calibration"></a>
 ### :round_pushpin: Localization and/or Calibration
@@ -193,12 +193,12 @@ run-matching \
 To run the localization and/or calibration from a sample of the dataset or from custom data, you can do the following:
 ```
 run-localization \
-    --sample assets/urban.npz --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
+    --sample assets/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
 ```
 You can use your own images and geodata by specifying the paths to the files directly:
 ```
 run-localization \
-    --image assets/urban_residential.jpg --dop assets/urban_residential_DOP.tif --dsm assets/urban_dsm.tif --intrinsics assets/urban_query_intrinsics.json --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
+    --image assets/samples/urban_residential.jpg --dop assets/samples/urban_residential_DOP.tif --dsm assets/samples/urban_dsm.tif --intrinsics assets/samples/urban_query_intrinsics.json --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
 ```
 **Important notes:**
 - If you do not provide intrinsics parameters, the system will automatically estimate them (performing calibration).
@@ -218,7 +218,7 @@ run-benchmarking \
 To visualize a single sample from the dataset:
 ```
 visualize-sample \
-    --sample assets/urban.npz --output_path ./outputs/sample.jpg --show
+    --sample assets/samples/highway_rural.npz --output_path ./outputs/sample.jpg --show
 ```
 <a name="Visualization-of-Dataset-Samples"></a>
 ### :framed_picture: Visualization of Samples in the Dataset
