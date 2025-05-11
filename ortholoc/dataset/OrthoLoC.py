@@ -50,13 +50,15 @@ class OrthoLoC(Dataset):
             predownload: bool, if True, download the samples while constructing the dataset object
         """
         assert mode in (0, 1, 2, 3), 'Mode should be 0, 1, 2 or 3'
+        assert set_name in ('all', 'train', 'val', 'test_inPlace', 'test_outPlace'), \
+            'set_name should be all, train, val, test_inPlace or test_outPlace'
 
         if dirpath is not None:
             assert sample_paths is None, 'Either dirpath or sample_paths should be provided'
         if sample_paths is not None:
             assert dirpath is None, 'Either dirpath or sample_paths should be provided'
 
-        if set_name is not None:
+        if set_name != 'all':
             assert sample_paths is None, 'set_name should not be used with sample_paths'
 
         if dirpath is None and sample_paths is None:
@@ -67,12 +69,15 @@ class OrthoLoC(Dataset):
 
         if dirpath is not None:
             sample_paths = []
-            for setname in ('train', 'val', 'test_inPlace', 'test_outPlace') if set_name == 'all' else (set_name,):
-                setpath = os.path.join(dirpath, setname)
-                if os.path.exists(setpath):
-                    sample_paths += utils.io.find_files(setpath, suffix='.npz', recursive=True)
-                else:
-                    sample_paths += utils.io.get_file_links(setpath, pattern=r"^.*\.npz$")
+            if dirpath.startswith('http'):
+                for setname in ('train', 'val', 'test_inPlace', 'test_outPlace') if set_name == 'all' else (set_name,):
+                    sample_paths += utils.io.get_file_links(os.path.join(dirpath, setname), pattern=rf"^.*\.npz$")
+            else:
+                dirpath_assets = utils.io.resolve_asset_path(dirpath, verbose=False)
+                dirpath = dirpath_assets or dirpath
+                if set_name != 'all':
+                    dirpath = os.path.join(dirpath, set_name)
+                sample_paths = utils.io.find_files(dirpath, suffix='.npz', recursive=True)
             sample_paths = sorted(sample_paths)
 
         assert (new_size is not None) ^ (scale_query_image

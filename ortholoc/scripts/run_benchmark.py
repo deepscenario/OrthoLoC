@@ -42,7 +42,8 @@ def run_benchmark(dataset_dir: str, matcher_name: str, output_dir: str, pnp_mode
 
 def parse_args():
     argparser = argparse.ArgumentParser(description='Run Benchmark')
-    argparser.add_argument('--dataset_dir', type=str, help='Dataset directory containing .npz files', required=True)
+    argparser.add_argument('--dataset_dir', type=str, help='Dataset directory containing .npz files. If not defined, '
+                            'the dataset will be downloaded from the OrthoLoC website')
     argparser.add_argument('--matcher', type=str, help='Matcher name', required=True,
                            choices=['GT'] + list(MATCHER_ZOO.keys()), dest='matcher_name')
     argparser.add_argument('--output_dir', type=str, help='Output directory', required=True)

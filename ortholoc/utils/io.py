@@ -19,9 +19,6 @@ from appdirs import user_cache_dir
 DATASET_URL = 'https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/'
 CACHE_DIR = os.environ.get('ORTHOLOC_CACHE_DIR', user_cache_dir('ortholoc'))
 
-#################################
-# I/O
-#################################
 def list_dir(dir_path: str) -> tuple[list[str], list[str]]:
     """
     List all files and folders in a directory.
@@ -142,6 +139,7 @@ def load_tif(path: str, get_coords: bool = False) -> tuple[np.ndarray, np.ndarra
     Returns:
         A tuple containing the data, mask, and coordinates (if requested).
     """
+    path = resolve_path(path, verbose=False)
     with rasterio.open(path) as src:
         data = src.read()
         data = data.transpose(1, 2, 0)
@@ -188,6 +186,7 @@ def load_dsm_tif(path: str) -> np.ndarray:
     Raises:
         AssertionError: If the DSM image does not have 3 channels.
     """
+    path = resolve_path(path, verbose=False)
     elevations, mask, coords = load_tif(path, get_coords=True)
     elevations[mask] = np.nan
     dsm = np.concatenate((coords, elevations), axis=-1)
@@ -231,6 +230,7 @@ def load_txt(txt_path: str) -> str:
     Returns:
         Loaded data as a string.
     """
+    txt_path = resolve_path(txt_path, verbose=False)
     with open(txt_path, 'r') as txt_file:
         data = txt_file.read()
     return data
@@ -246,6 +246,7 @@ def load_json(path: str) -> dict:
     Returns:
         Loaded data as a dictionary.
     """
+    path = resolve_path(path, verbose=False)
     with open(path, 'r') as f:
         data = json.load(f)
     return data
@@ -293,6 +294,7 @@ def load_camera_params(path: str) -> tuple[np.ndarray | None, np.ndarray | None]
     Returns:
         A tuple containing the camera pose matrix and intrinsics matrix.
     """
+    path = resolve_path(path, verbose=False)
     data = load_json(path)
     pose_w2c = np.array(data['pose_w2c']) if 'pose_w2c' in data and data['pose_w2c'] is not None else None
     intrinsics = np.array(data['intrinsics']) if 'intrinsics' in data and data['intrinsics'] is not None else None
@@ -318,8 +320,8 @@ def resolve_path(input_path: str | Path, verbose: bool = True) -> str | None:
                 download_files(input_path_tmp, local_path, pattern=r"^.*\.npz$")
             else:
                 download_file(input_path_tmp, local_path)
-        return local_path if os.path.exists(local_path) else input_path
-    return local_path
+        return str(local_path if os.path.exists(local_path) else input_path)
+    return str(local_path) if local_path is not None else input_path
 
 
 def resolve_asset_path(input_path: str | Path, verbose: bool = True) -> Path | None:
@@ -383,7 +385,7 @@ def download_file(url: str, save_path: str, verbose = True) -> str | None:
         return None
 
 
-def get_file_links(url: str, pattern: str) -> list[str]:
+def get_file_links(url: str, pattern: str | None = None) -> list[str]:
     """
     Fetches the file links from an Apache directory listing, filtering by a regex pattern.
 
@@ -401,13 +403,16 @@ def get_file_links(url: str, pattern: str) -> list[str]:
 
     soup = BeautifulSoup(response.text, 'html.parser')
     links = [link.get('href') for link in soup.find_all('a') if link.get('href')]
-    regex = re.compile(pattern)
+    if pattern is not None:
+        regex = re.compile(pattern)
 
-    return [
-        f"{url.rstrip('/')}/{href}"
-        for href in links
-        if regex.match(href)
-    ]
+        return [
+            f"{url.rstrip('/')}/{href}"
+            for href in links
+            if regex.match(href)
+        ]
+    else:
+        return links
 
 
 def download_files(url: str, save_directory: str, pattern: str, verbose: bool = True) -> str | None:

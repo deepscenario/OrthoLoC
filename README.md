@@ -5,31 +5,19 @@
 
 <!-- Badges -->
 <p>
-  <a href="https://github.com/deepscenario/OrthoLoC/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/deepscenario/OrthoLoC" alt="contributors" />
+  <a href="https://deepscenario.github.io/OrthoLoC/">
+    <img src="https://img.shields.io/badge/💻-Project Page-blue" alt="project_page" />
   </a>
   <a href="">
-    <img src="https://img.shields.io/github/last-commit/deepscenario/OrthoLoC" alt="last update" />
-  </a>
-  <a href="https://github.com/deepscenario/OrthoLoC/network/members">
-    <img src="https://img.shields.io/github/forks/deepscenario/OrthoLoC" alt="forks" />
+    <img src="https://img.shields.io/badge/📄-Paper (under review)-yellow" alt="paper" />
   </a>
   <a href="https://github.com/deepscenario/OrthoLoC/stargazers">
     <img src="https://img.shields.io/github/stars/deepscenario/OrthoLoC" alt="stars" />
-  </a>
-  <a href="https://github.com/deepscenario/OrthoLoC/issues/">
-    <img src="https://img.shields.io/github/issues/deepscenario/OrthoLoC" alt="open issues" />
   </a>
   <a href="https://github.com/deepscenario/OrthoLoC/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/deepscenario/OrthoLoC.svg" alt="license" />
   </a>
 </p>
-
-<h4>
-    <a href="">📄 Paper (Under Review)</a>
-  <span> · </span>
-    <a href="https://deepscenario.github.io/OrthoLoC/">💻 Project Page</a>
-  </h4>
 </div>
 
 <div align="center">
@@ -277,14 +265,14 @@ To run the localization and/or calibration from a sample of the dataset or from 
 
 ```
 run-localization \
-    --sample assets/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
+    --sample assets/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --show 
 ```
 
 You can use your own images and geodata by specifying the paths to the files directly:
 
 ```
 run-localization \
-    --image assets/samples/urban_residential.jpg --dop assets/samples/urban_residential_DOP.tif --dsm assets/samples/urban_dsm.tif --intrinsics assets/samples/urban_query_intrinsics.json --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show 
+    --image assets/demo/urban_residential.jpg --dop assets/demo/urban_residential_DOP.tif --dsm assets/demo/urban_residential_DSM.tif --intrinsics assets/demo/urban_residential_intrinsics.json --matcher Mast3R --device cuda --angles 0 --show 
 ```
 
 **Important notes:**
@@ -301,8 +289,8 @@ run-localization \
 To benchmark performance across a set of samples from the dataset or custom data:
 
 ```
-run-benchmarking \
-    --dirpath assets/samples/ --matcher Mast3R --device cuda --angles 0 --output_dir ./outputs/ --show
+run-benchmark \
+    --dataset_dir assets/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
 ```
 
 <a name="Visualization-of-a-Sample"></a>
@@ -313,7 +301,7 @@ To visualize a single sample from the dataset:
 
 ```
 visualize-sample \
-    --sample assets/samples/highway_rural.npz --output_path ./outputs/sample.jpg --show
+    --sample assets/samples/highway_rural.npz --show
 ```
 
 <a name="Visualization-of-Dataset-Samples"></a>
@@ -324,7 +312,7 @@ To create a visualization of all samples in a dataset directory:
 
 ```
 visualize-dataset \
-    --dirpath assets/samples/ --output_path ./outputs/samples.jpg --show
+    --dirpath assets/samples/ --output_path --show
 ```
 
 <a name="License"></a>
