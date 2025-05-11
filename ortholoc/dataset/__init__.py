@@ -1,1 +1,2 @@
-from ortholoc.dataset.OrthoLoC import OrthoLoC
+from .OrthoLoC import OrthoLoC
+__all__ = ['OrthoLoC']

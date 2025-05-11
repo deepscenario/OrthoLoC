@@ -1,1 +1,2 @@
-from ortholoc.benchmarking.benchmark import Benchmark
+from .benchmark import Benchmark
+__all__ = ['Benchmark']
