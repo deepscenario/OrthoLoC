@@ -9,7 +9,7 @@ description = "Ortholoc Python library"
 authors = [
   { name = "DeepScenario 2025 - Oussema Dhaouadi" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "CC BY-NC-SA 4.0"}
 dependencies = [
