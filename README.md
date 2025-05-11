@@ -99,7 +99,7 @@ OrthoLoC is a framework for UAV camera localization and calibration using orthog
 
 #### via pip
 
-To install the package, you can use pip to install it directly from GitHub:
+To install the package, you can use pip to install it directly from GitHub (this might take a while):
 ```
 pip install git+https://github.com/deepscenario/OrthoLoC.git
 ```
