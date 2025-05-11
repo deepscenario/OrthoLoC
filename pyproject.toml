@@ -31,8 +31,8 @@ dependencies = [
 run-benchmark = "ortholoc.scripts.run_benchmark:main"
 run-localization = "ortholoc.scripts.run_localization:main"
 run-matching = "ortholoc.scripts.run_matching:main"
-visualize_sample = "ortholoc.scripts.visualize_sample:main"
-visualize_dataset = "ortholoc.scripts.visualize_dataset:main"
+visualize-sample = "ortholoc.scripts.visualize_sample:main"
+visualize-dataset = "ortholoc.scripts.visualize_dataset:main"
 
 [tool.hatch.build]
 include = [

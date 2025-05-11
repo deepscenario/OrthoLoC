@@ -184,7 +184,7 @@ All the weights for matching algorithms will be downloaded automatically.
 
 To run the image matching from a sample of the dataset or from two images, you can do the following:
 ```
-run-matching.py \
+run-matching \
     --sample assets/urban.npz --matcher superpoint+lightglue --device cuda --angles 0 90 180 270 --show  
 ```
 <a name="Localization-and-Calibration"></a>
