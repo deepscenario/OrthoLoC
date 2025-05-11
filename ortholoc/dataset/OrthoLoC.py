@@ -18,13 +18,11 @@ from ortholoc.correspondences import Correspondences2D2D
 
 
 class OrthoLoC(Dataset):
-    def __init__(
-            self, dirpath: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
-            end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0,
-            new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
-            scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
-            covisibility_ratio: float = 1.0, return_tensor: bool = True
-    ) -> None:
+    def __init__(self, dirpath: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
+                 end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0,
+                 new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
+                 scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
+                 covisibility_ratio: float = 1.0, return_tensor: bool = True) -> None:
         """
         Args:
             dirpath: path to the directory containing the samples
@@ -169,10 +167,10 @@ class OrthoLoC(Dataset):
 
     @staticmethod
     def get_correspondences_2d2d(
-            sample: dict,
-            normalized: bool = False,
-            covisible_only=False,
-            sampling_pts2d: np.ndarray | None = None,
+        sample: dict,
+        normalized: bool = False,
+        covisible_only=False,
+        sampling_pts2d: np.ndarray | None = None,
     ) -> Correspondences2D2D:
         """
         Compute the GT 2D-2D correspondences between the query and DOP images.
@@ -194,8 +192,7 @@ class OrthoLoC(Dataset):
         else:
             pts0 = sampling_pts2d
             pts1 = utils.geometry.sample_grid(sample['matches'], sampling_pts2d, mode='nearest',
-                                              align_corners=True).reshape(
-                (-1, 2))
+                                              align_corners=True).reshape((-1, 2))
             confidences = utils.geometry.sample_grid(sample['matching_confidences'], sampling_pts2d, mode='nearest',
                                                      align_corners=True).reshape((-1))
         query_to_dop_correspondences_2d2d = Correspondences2D2D(pts0=pts0, pts1=pts1, confidences=confidences,
@@ -353,9 +350,8 @@ class OrthoLoC(Dataset):
         return output
 
     @staticmethod
-    def resize_tensor(
-            array: torch.Tensor, size: tuple[int, int], align_corners: bool | None = False, mode='bilinear'
-    ) -> torch.Tensor:
+    def resize_tensor(array: torch.Tensor, size: tuple[int, int], align_corners: bool | None = False,
+                      mode='bilinear') -> torch.Tensor:
         """
         Resize a tensor to the given size using interpolation.
         """
@@ -369,17 +365,14 @@ class OrthoLoC(Dataset):
         return output[0] if n_dim == 3 else (output[0, 0] if n_dim == 2 else output)
 
     @staticmethod
-    def resize_image(
-            array: np.ndarray, size: tuple[int, int], mode='linear'
-    ) -> np.ndarray:
+    def resize_image(array: np.ndarray, size: tuple[int, int], mode='linear') -> np.ndarray:
         """
         Resize an image to the given size using interpolation.
         """
         return cv2.resize(array, size, interpolation=cv2.INTER_LINEAR if mode == 'linear' else cv2.INTER_NEAREST)
 
-    def resize_map(
-            self, array: np.ndarray, size: tuple[int, int], align_corners: bool | None = False, mode='bilinear'
-    ) -> np.ndarray:
+    def resize_map(self, array: np.ndarray, size: tuple[int, int], align_corners: bool | None = False,
+                   mode='bilinear') -> np.ndarray:
         """
         Resize a map to the given size using interpolation.
         """
@@ -427,12 +420,10 @@ class OrthoLoC(Dataset):
 
         return data_dict
 
-    def plot_sample(
-            self, sample_id: str, n_rows: int = 1, n_cols: int = 4, figsize: tuple[float, float] = (15, 3.2),
-            show: bool = False, title: str = '', fontsize: int = 12, dsm_vmin: float | None = None,
-            dsm_vmax: float | None = None, show_sample_id: bool = True, axs: list[plt.Axes] | None = None,
-            subtitles: bool = True
-    ) -> tuple[plt.Figure, list[plt.Axes]]:
+    def plot_sample(self, sample_id: str, n_rows: int = 1, n_cols: int = 4, figsize: tuple[float, float] = (15, 3.2),
+                    show: bool = False, title: str = '', fontsize: int = 12, dsm_vmin: float | None = None,
+                    dsm_vmax: float | None = None, show_sample_id: bool = True, axs: list[plt.Axes] | None = None,
+                    subtitles: bool = True) -> tuple[plt.Figure, list[plt.Axes]]:
         """
         Plot a sample with its query image, point map (as depth map), DOP image, and DSM image.
         """

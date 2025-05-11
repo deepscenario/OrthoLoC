@@ -11,7 +11,6 @@ class MatcherGT(Matcher):
     """
     Ground truth matcher for OrthoLoC dataset.
     """
-
     def __init__(self, dataset: OrthoLoC, num_points: int | None = None) -> None:
         super().__init__(name='GT', device='cpu', angles=[0])
         self.dataset = dataset
@@ -26,6 +25,6 @@ class MatcherGT(Matcher):
         else:
             sampling_pts2d = None
         query_to_dop_correspondences_2d2d = OrthoLoC.get_correspondences_2d2d(sample, normalized=normalized,
-                                                                                sampling_pts2d=sampling_pts2d,
-                                                                                covisible_only=covisible_only)
+                                                                              sampling_pts2d=sampling_pts2d,
+                                                                              covisible_only=covisible_only)
         return query_to_dop_correspondences_2d2d

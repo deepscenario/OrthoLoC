@@ -11,9 +11,7 @@ from matplotlib import pyplot as plt
 #################################
 # I/O
 #################################
-def list_dir(
-        dir_path: str
-) -> tuple[list[str], list[str]]:
+def list_dir(dir_path: str) -> tuple[list[str], list[str]]:
     """
     List all files and folders in a directory.
 
@@ -34,11 +32,7 @@ def list_dir(
     return folders, file_names
 
 
-def find_files(
-        directory: str,
-        suffix: str | tuple[str, ...] | None = None,
-        recursive: bool = False
-) -> list[str]:
+def find_files(directory: str, suffix: str | tuple[str, ...] | None = None, recursive: bool = False) -> list[str]:
     """
     Find all files in a directory with a given suffix.
 
@@ -58,9 +52,7 @@ def find_files(
     return files
 
 
-def json_serializer(
-        obj: np.ndarray | np.float32 | np.float64,
-) -> float | list:
+def json_serializer(obj: np.ndarray | np.float32 | np.float64, ) -> float | list:
     """
     JSON serializer for numpy data types.
 
@@ -82,10 +74,7 @@ def json_serializer(
     raise TypeError("Type not serializable")
 
 
-def save_json(
-        path: str,
-        data: dict
-) -> None:
+def save_json(path: str, data: dict) -> None:
     """
     Save data to a JSON file.
 
@@ -98,10 +87,7 @@ def save_json(
         json.dump(data, f, indent=3, default=json_serializer)
 
 
-def load_image(
-        path: str,
-        grayscale: bool = False
-) -> np.ndarray:
+def load_image(path: str, grayscale: bool = False) -> np.ndarray:
     """
     Load an image from a file.
 
@@ -124,10 +110,7 @@ def load_image(
     return image
 
 
-def load_tif(
-        path: str,
-        get_coords: bool = False
-) -> tuple[np.ndarray, np.ndarray, np.ndarray | None]:
+def load_tif(path: str, get_coords: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray | None]:
     """
     Load a GeoTIFF file.
 
@@ -153,9 +136,7 @@ def load_tif(
     return data, mask, coords
 
 
-def load_dop_tif(
-        path: str
-) -> np.ndarray:
+def load_dop_tif(path: str) -> np.ndarray:
     """
     Load a DOP GeoTIFF file.
 
@@ -173,9 +154,7 @@ def load_dop_tif(
     return image_dop
 
 
-def load_dsm_tif(
-        path: str
-) -> np.ndarray:
+def load_dsm_tif(path: str) -> np.ndarray:
     """
     Load a DSM GeoTIFF file.
 
@@ -195,10 +174,7 @@ def load_dsm_tif(
     return dsm
 
 
-def save_npz(
-        npz_path: str,
-        **data: dict
-) -> None:
+def save_npz(npz_path: str, **data: dict) -> None:
     """
     Save data to a compressed NPZ file.
 
@@ -211,10 +187,7 @@ def save_npz(
         np.savez_compressed(npz_file, **data)
 
 
-def save_txt(
-        txt_path: str,
-        data: str
-) -> None:
+def save_txt(txt_path: str, data: str) -> None:
     """
     Save data to a text file.
 
@@ -227,9 +200,7 @@ def save_txt(
         txt_file.write(data)
 
 
-def load_txt(
-        txt_path: str
-) -> str:
+def load_txt(txt_path: str) -> str:
     """
     Load data from a text file.
 
@@ -244,9 +215,7 @@ def load_txt(
     return data
 
 
-def load_json(
-        path: str
-) -> dict:
+def load_json(path: str) -> dict:
     """
     Load data from a JSON file.
 
@@ -261,11 +230,7 @@ def load_json(
     return data
 
 
-def save_fig(
-        fig: plt.Figure,
-        path: str,
-        dpi: int = 100
-) -> None:
+def save_fig(fig: plt.Figure, path: str, dpi: int = 100) -> None:
     """
     Save a matplotlib figure to a file.
 
@@ -280,11 +245,7 @@ def save_fig(
     plt.close(fig)
 
 
-def save_camera_params(
-        pose_w2c: np.ndarray | None,
-        intrinsics: np.ndarray | None,
-        path: str
-) -> None:
+def save_camera_params(pose_w2c: np.ndarray | None, intrinsics: np.ndarray | None, path: str) -> None:
     """
     Save camera parameters to a JSON file.
 
@@ -301,9 +262,7 @@ def save_camera_params(
     save_json(path, data)
 
 
-def load_camera_params(
-        path: str
-) -> tuple[np.ndarray | None, np.ndarray | None]:
+def load_camera_params(path: str) -> tuple[np.ndarray | None, np.ndarray | None]:
     """
     Load camera parameters from a JSON file.
 

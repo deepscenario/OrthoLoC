@@ -14,6 +14,9 @@ def run_matching(matcher_name: str, img0_path: str | None = None, img1_path: str
                  sample_path: str | None = None, output_path: str | None = None, angles: list[float] | None = None,
                  device: str = 'cuda', min_conf: float = 0.0, use_adhop: bool = False, show: bool = False,
                  max_pts: int = 1000) -> None:
+    """
+    Run matching on two images or a sample from the OrthoLoC dataset.
+    """
     assert (img0_path is not None
             and img1_path is not None) ^ (sample_path is not None), "Either img_paths or sample_path must be provided"
     dataset = None
@@ -73,15 +76,28 @@ def parse_args():
     image_group.add_argument('--img2', type=str, help='Path of the second image', dest='img1_path')
     group.add_argument('--sample', type=str, help='Sample path .npz', dest='sample_path')
 
-    argparser.add_argument('--matcher', type=str, help='set_name', required=True,
+    argparser.add_argument('--matcher', type=str, help='Matcher name', required=True,
                            choices=['GT'] + list(MATCHER_ZOO.keys()), dest='matcher_name')
-    argparser.add_argument('--angles', nargs='+', type=float, help='angles')
-    argparser.add_argument('--device', type=str, help='device', default='cuda')
-    argparser.add_argument('--show', action='store_true', help='show')
+    argparser.add_argument(
+        '--angles',
+        nargs='+',
+        type=int,
+        help='This rotates the query image before '
+        'matching and take the best rotation results as the '
+        'final correspondences. If not defined, default '
+        'rotation values will be considered depending on '
+        'the matcher used.',
+    )
+    argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
+                           choices=['cuda', 'cpu'])
+    argparser.add_argument('--show', action='store_true', help='Whether to show the results')
     argparser.add_argument('--use_adhop', action='store_true', help='Use Homography Preconditioning')
-    argparser.add_argument('--min_conf', type=float, help='min confidence exclusive', default=0.0)
-    argparser.add_argument('--max_pts', type=int, help='max pts to visualize', default=1000)
-    argparser.add_argument('--output_path', type=str, required=False)
+    argparser.add_argument(
+        '--min_conf', type=float, help='Minimum correspondences confidences will be '
+        'used to filter matchings below this value. Default= 0.5', default=0.5)
+    argparser.add_argument('--plot_max_pts', type=int, help='Max number of matchings to visualize', dest='max_pts',
+                           default=1000)
+    argparser.add_argument('--output_dir', type=str, help='Output directory')
     return utils.misc.update_args_with_asset_paths(argparser.parse_args())
 
 

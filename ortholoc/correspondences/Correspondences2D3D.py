@@ -48,9 +48,9 @@ class Correspondences2D3D(Correspondences):
         return self
 
     def calibrate(
-            self, num_points: int, width: int, height: int, intrinsics_matrix: np.ndarray | None = None,
-            reprojection_error_diag_ratio=None, focal_length_init: np.ndarray | None = None,
-            reprojection_error=5.0, pnp_mode='poselib', fix_principle_points: bool = True
+        self, num_points: int, width: int, height: int, intrinsics_matrix: np.ndarray | None = None,
+        reprojection_error_diag_ratio=None, focal_length_init: np.ndarray | None = None, reprojection_error=5.0,
+        pnp_mode='poselib', fix_principle_points: bool = True
     ) -> tuple[bool, np.ndarray | None, np.ndarray | None, np.ndarray | None, np.ndarray | None]:
         """
         Estimate the camera pose and intrinsics using 2D-3D correspondences.
@@ -75,7 +75,7 @@ class Correspondences2D3D(Correspondences):
             pts2d_query = pts2d_query[idxs]
 
             if reprojection_error_diag_ratio is not None:
-                reprojection_error_img = reprojection_error_diag_ratio * math.sqrt(width ** 2 + height ** 2)
+                reprojection_error_img = reprojection_error_diag_ratio * math.sqrt(width**2 + height**2)
             else:
                 reprojection_error_img = reprojection_error
 
@@ -87,10 +87,10 @@ class Correspondences2D3D(Correspondences):
                 inliers_mask = np.ones(len(pts2d_query), dtype=bool)
             else:
                 success, pose_c2w_pred, inliers_mask = utils.pose.run_pnp(pts2D=pts2d_query, pts3D=pts3d_query,
-                                                                     K=intrinsics_matrix, distortion=None,
-                                                                     mode=pnp_mode,
-                                                                     reprojectionError=reprojection_error_img,
-                                                                     img_size=(width, height))
+                                                                          K=intrinsics_matrix, distortion=None,
+                                                                          mode=pnp_mode,
+                                                                          reprojectionError=reprojection_error_img,
+                                                                          img_size=(width, height))
             if pose_c2w_pred is not None:
                 pose_c2w_pred = pose_c2w_pred[:3, :].astype(np.float32)
             if intrinsics_matrix is not None:
@@ -111,6 +111,7 @@ class Correspondences2D3D(Correspondences):
         Compute the reprojection errors of the 3D points in the 2D image plane.
         """
         assert not self.is_normalized
-        pts2d_proj = utils.geometry.project_pts3d(self.pts1, pose_w2c=utils.pose.inv_pose(pose_c2w), intrinsics=intrinsics_matrix)
+        pts2d_proj = utils.geometry.project_pts3d(self.pts1, pose_w2c=utils.pose.inv_pose(pose_c2w),
+                                                  intrinsics=intrinsics_matrix)
         reprojection_errors = np.linalg.norm(pts2d_proj - self.pts0, axis=1)
         return reprojection_errors

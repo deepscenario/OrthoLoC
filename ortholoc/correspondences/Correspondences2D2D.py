@@ -53,10 +53,9 @@ class Correspondences2D2D(Correspondences):
         return Correspondences2D2D(x1_pix, x_1in2_pix, is_normalized=False)
 
     @classmethod
-    def from_grids3d(
-            cls, grid3d_0: np.ndarray, grid3d_1: np.ndarray, pose_w2c_1: np.ndarray, intrinsics_1: np.ndarray,
-            decay: float | None = 1.0, sampling_pts2d: np.ndarray | None = None, normalized: bool = False
-    ) -> Self:
+    def from_grids3d(cls, grid3d_0: np.ndarray, grid3d_1: np.ndarray, pose_w2c_1: np.ndarray, intrinsics_1: np.ndarray,
+                     decay: float | None = 1.0, sampling_pts2d: np.ndarray | None = None,
+                     normalized: bool = False) -> Self:
         """
         Create Correspondences2D2D from a projected 3D grid (0) on the camera (1) with known 3D point map (grid3d_1)
         of the camera (1). All pixels in the image will be considered in the correspondences if sampling_pts2d is None.
@@ -70,20 +69,20 @@ class Correspondences2D2D(Correspondences):
         correspondences_2d2d = cls.from_grid3d(grid3d_w=grid3d_0, pose_w2c=pose_w2c_1, intrinsics=intrinsics_1,
                                                sampling_pts2d=sampling_pts2d)
 
-        distances = utils.geometry.compute_dist(grid3d_0=grid3d_0, grid3d_1=grid3d_1, correspondences_2d2d=correspondences_2d2d,
-                                       mode='nearest', align_corners=True)
-        correspondences_2d2d.confidences = utils.geometry.dist_to_confidences(distances=distances,
-                                                                     decay=decay) if decay is not None else distances
+        distances = utils.geometry.compute_dist(grid3d_0=grid3d_0, grid3d_1=grid3d_1,
+                                                correspondences_2d2d=correspondences_2d2d, mode='nearest',
+                                                align_corners=True)
+        correspondences_2d2d.confidences = utils.geometry.dist_to_confidences(
+            distances=distances, decay=decay) if decay is not None else distances
         if normalized:
             correspondences_2d2d = correspondences_2d2d.normalized(w0=grid3d_0.shape[1], h0=grid3d_0.shape[0],
                                                                    w1=grid3d_1.shape[1], h1=grid3d_1.shape[0])
         return correspondences_2d2d
 
-    def compute_geometry(
-            self, w0: int, h0: int, ransac_method: str = "CV2_USAC_MAGSAC", ransac_reproj_threshold: float = 8,
-            ransac_confidence: float = 0.9999, ransac_max_iter: int = 10000, min_num_matches: int = 4,
-            geometry: str = 'Fundamental', silent: bool = False
-    ) -> tuple[np.ndarray, ...]:
+    def compute_geometry(self, w0: int, h0: int, ransac_method: str = "CV2_USAC_MAGSAC",
+                         ransac_reproj_threshold: float = 8, ransac_confidence: float = 0.9999,
+                         ransac_max_iter: int = 10000, min_num_matches: int = 4, geometry: str = 'Fundamental',
+                         silent: bool = False) -> tuple[np.ndarray, ...]:
         """
         Compute the fundamental matrix and homography matrix using RANSAC.
         """
@@ -132,7 +131,12 @@ class Correspondences2D2D(Correspondences):
         return mask_f, mask_h, F, H, H1, H2
 
     def take_covisible(
-            self, w0: int, h0: int, w1: int, h1: int, is_normalized: bool | None = None,
+        self,
+        w0: int,
+        h0: int,
+        w1: int,
+        h1: int,
+        is_normalized: bool | None = None,
     ) -> Self:
         """
         Filter correspondences by taking only those that are within the image bounds.
@@ -189,12 +193,12 @@ class Correspondences2D2D(Correspondences):
         assert (grid3d_0 is not None) ^ (grid3d_1 is not None), 'Either grid3d_0 or grid3d_1 should be defined'
         if grid3d_0 is not None:
             pts3d = utils.geometry.sample_grid(grid=grid3d_0, pts2d=self.pts0, mode='nearest', align_corners=True,
-                                      is_normalized=self.is_normalized)
+                                               is_normalized=self.is_normalized)
             pts2d = self.pts1
         elif grid3d_1 is not None:
             pts2d = self.pts0
             pts3d = utils.geometry.sample_grid(grid=grid3d_1, pts2d=self.pts1, mode='nearest', align_corners=True,
-                                      is_normalized=self.is_normalized)
+                                               is_normalized=self.is_normalized)
         else:
             raise NotImplementedError
         return Correspondences2D3D(pts2d, pts3d, confidences=self.confidences, is_normalized=self.is_normalized)
@@ -218,13 +222,11 @@ class Correspondences2D2D(Correspondences):
         return Correspondences2D2D(pts0=self.pts1, pts1=self.pts0, confidences=self.confidences,
                                    is_normalized=self.is_normalized)
 
-    def plot(
-            self, img1: np.ndarray, img2: np.ndarray, img1_name: str | None = None, img2_name: str | None = None,
-            axes: list[plt.Axes] | None = None, show: bool = False, title: str = '', vmin: float | None = None,
-            vmax: float | None = None, alpha: float = 0.5, point_size: float = 10, linewidth: int = 2,
-            arrows: bool = True, max_pts: int | None = None, cmap: str = 'jet', show_colorbar: bool = True,
-            marker: str = 'o', fig_scale: float = 0.5, dpi: int = 100
-    ) -> tuple[plt.Figure, list[plt.Axes]]:
+    def plot(self, img1: np.ndarray, img2: np.ndarray, img1_name: str | None = None, img2_name: str | None = None,
+             axes: list[plt.Axes] | None = None, show: bool = False, title: str = '', vmin: float | None = None,
+             vmax: float | None = None, alpha: float = 0.5, point_size: float = 10, linewidth: int = 2,
+             arrows: bool = True, max_pts: int | None = None, cmap: str = 'jet', show_colorbar: bool = True,
+             marker: str = 'o', fig_scale: float = 0.5, dpi: int = 100) -> tuple[plt.Figure, list[plt.Axes]]:
         """
         Plot the correspondences between two images.
         """
@@ -254,7 +256,7 @@ class Correspondences2D2D(Correspondences):
         positions_2 = correspondences_2d2d.pts1
         confidences = np.asarray(
             correspondences_2d2d.confidences) if correspondences_2d2d.confidences is not None else np.ones(
-            len(correspondences_2d2d), dtype=float)
+                len(correspondences_2d2d), dtype=float)
 
         if max_pts is not None and len(positions_1) > max_pts:
             logger.info(f'{max_pts} points will be randomly selected for plotting')

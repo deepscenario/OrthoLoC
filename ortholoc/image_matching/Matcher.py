@@ -18,7 +18,6 @@ class Matcher:
     """
     Base class for image matching.
     """
-
     def __init__(self, angles: list[float], name: str, device: str = 'cuda') -> None:
         self.device: torch.device = torch.device('cuda' if torch.cuda.is_available() and device == 'cuda' else 'cpu')
         if self.device.type == 'cpu':
@@ -33,11 +32,9 @@ class Matcher:
         pass
 
     @staticmethod
-    def build_correspondences(
-            pts0: np.ndarray, pts1: np.ndarray, h0: int, w0: int, h1: int, w1: int,
-            normalized: bool = True, covisible_only: bool = True,
-            confidences: np.ndarray | None = None
-    ) -> Correspondences2D2D:
+    def build_correspondences(pts0: np.ndarray, pts1: np.ndarray, h0: int, w0: int, h1: int, w1: int,
+                              normalized: bool = True, covisible_only: bool = True,
+                              confidences: np.ndarray | None = None) -> Correspondences2D2D:
         """
         Build correspondences from 2D points. This is useful for converting numpy arrays to Correspondences2D2D objects.
         """
@@ -61,10 +58,9 @@ class Matcher:
 
         return correspondences_2d2d
 
-    def run(
-            self, img0: np.ndarray, img1: np.ndarray, silent: bool = False, covisible_only: bool = True,
-            angles: list[float] | None = None, normalized: bool = True, *args: Any, **kwargs: Any
-    ) -> list[Correspondences2D2D]:
+    def run(self, img0: np.ndarray, img1: np.ndarray, silent: bool = False, covisible_only: bool = True,
+            angles: list[float] | None = None, normalized: bool = True, *args: Any,
+            **kwargs: Any) -> list[Correspondences2D2D]:
         """
         Run the matcher on a stereo pair of images. The function will rotate the first image by the specified angles
         """
@@ -100,7 +96,7 @@ class Matcher:
             except IndexError as e:
                 logger.error(f'Error in sample: {e}')
                 all_coorespondences.append(
-                    Correspondences2D2D(pts0=np.empty((0, 2)), pts1=np.empty((0, 2)), confidences=np.empty((0,)),
+                    Correspondences2D2D(pts0=np.empty((0, 2)), pts1=np.empty((0, 2)), confidences=np.empty((0, )),
                                         is_normalized=False))
                 continue
 
@@ -129,14 +125,14 @@ class Matcher:
         return all_coorespondences
 
     def adhop(
-            self,
-            correspondences_2d2d: Correspondences2D2D,
-            img0: np.ndarray,
-            img1: np.ndarray,
-            min_conf: float = 0.0,
-            silent: bool = False,
-            keep_at_least: int = 1000,
-            normalized: bool = True,
+        self,
+        correspondences_2d2d: Correspondences2D2D,
+        img0: np.ndarray,
+        img1: np.ndarray,
+        min_conf: float = 0.0,
+        silent: bool = False,
+        keep_at_least: int = 1000,
+        normalized: bool = True,
     ) -> Correspondences2D2D:
         """
         Refine the correspondences using AdHop method.
@@ -147,7 +143,7 @@ class Matcher:
         correspondences_2d2d = correspondences_2d2d.denormalized(h0=h0, w0=w0, h1=h1, w1=w1)
         mask = ~np.all(img1 == 0, axis=-1)
         correspondences_2d2d = correspondences_2d2d.take_mask(mask[correspondences_2d2d.pts1[:, 1].astype(int),
-        correspondences_2d2d.pts1[:, 0].astype(int)])
+                                                                   correspondences_2d2d.pts1[:, 0].astype(int)])
 
         try:
             mask_f, mask_h, F, H, H1, H2 = correspondences_2d2d.take_min_conf(0.0).compute_geometry(

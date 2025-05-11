@@ -32,9 +32,7 @@ except ImportError:
     HAS_PYCOLMAP = False
 
 
-def inv_pose(
-        pose_matrix: np.ndarray
-) -> np.ndarray | torch.Tensor:
+def inv_pose(pose_matrix: np.ndarray) -> np.ndarray | torch.Tensor:
     """
     Invert a pose matrix.
 
@@ -55,9 +53,7 @@ def inv_pose(
     return compose_pose(R_inv, t_inv)
 
 
-def decompose_pose(
-        pose_matrix: np.ndarray
-) -> tuple[np.ndarray | torch.Tensor, np.ndarray | torch.Tensor]:
+def decompose_pose(pose_matrix: np.ndarray) -> tuple[np.ndarray | torch.Tensor, np.ndarray | torch.Tensor]:
     """
     Decompose a pose matrix into rotation and translation components.
 
@@ -82,10 +78,7 @@ def decompose_pose(
     return R, t
 
 
-def compose_pose(
-        R: torch.Tensor,
-        t: torch.Tensor
-) -> torch.Tensor:
+def compose_pose(R: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
     """
     Compose a pose matrix from rotation and translation components.
 
@@ -124,16 +117,9 @@ def opencv_to_colmap_intrinsics(K: np.ndarray) -> np.ndarray:
     return K
 
 
-def run_pnp(
-    pts2D: np.ndarray,
-    pts3D: np.ndarray,
-    K: np.ndarray,
-    distortion: np.ndarray | None = None,
-    mode: str = 'cv2',
-    reprojectionError: float = 5.0,
-    img_size: tuple[int, int] | None = None,
-    no_ransac: bool = False
-) -> tuple[bool, np.ndarray | None, np.ndarray | None]:
+def run_pnp(pts2D: np.ndarray, pts3D: np.ndarray, K: np.ndarray, distortion: np.ndarray | None = None,
+            mode: str = 'cv2', reprojectionError: float = 5.0, img_size: tuple[int, int] | None = None,
+            no_ransac: bool = False) -> tuple[bool, np.ndarray | None, np.ndarray | None]:
     """
     Perform Perspective-n-Point (PnP) pose estimation.
     use OPENCV model for distortion (4 values)
@@ -284,17 +270,10 @@ def run_pnp(
         return False, None, None
 
 
-def run_calibration(
-        pts2D: np.ndarray,
-        pts3D: np.ndarray,
-        distortion: np.ndarray | None = None,
-        mode: str = 'cv2',
-        reprojectionError: float = 5.0,
-        fix_principle_points: bool = True,
-        focal_length_init: np.ndarray | None = None,
-        img_size: tuple[int, int] | None = None,
-        no_ransac: bool = False
-) -> tuple[bool, np.ndarray | None, np.ndarray | None]:
+def run_calibration(pts2D: np.ndarray, pts3D: np.ndarray, distortion: np.ndarray | None = None, mode: str = 'cv2',
+                    reprojectionError: float = 5.0, fix_principle_points: bool = True,
+                    focal_length_init: np.ndarray | None = None, img_size: tuple[int, int] | None = None,
+                    no_ransac: bool = False) -> tuple[bool, np.ndarray | None, np.ndarray | None]:
     """
     Perform camera calibration using 2D-3D correspondences.
 
@@ -360,17 +339,12 @@ def run_calibration(
 
 
 def adhop_refinement(
-        matcher: Matcher, correspondences_2d2d_init: Correspondences2D2D, image_query: np.ndarray,
-        image_dop: np.ndarray, dsm: np.ndarray,
-        intrinsics_matrix_gt: np.ndarray | None, use_intrinsics: bool, min_conf: float, num_points: int,
-        reprojection_error: float, pnp_mode: str, fix_principle_points: bool,
-        reproj_errors_init: np.ndarray, height: int, width: int, silent: bool = False
-) -> tuple[bool, np.ndarray | None,
-                 np.ndarray | None,
-                 np.ndarray | None,
-                 np.ndarray | None,
-                 Correspondences2D2D | None,
-                 Correspondences2D2D | None]:
+    matcher: Matcher, correspondences_2d2d_init: Correspondences2D2D, image_query: np.ndarray, image_dop: np.ndarray,
+    dsm: np.ndarray, intrinsics_matrix_gt: np.ndarray | None, use_intrinsics: bool, min_conf: float, num_points: int,
+    reprojection_error: float, pnp_mode: str, fix_principle_points: bool, reproj_errors_init: np.ndarray, height: int,
+    width: int, silent: bool = False
+) -> tuple[bool, np.ndarray | None, np.ndarray | None, np.ndarray | None, np.ndarray | None, Correspondences2D2D | None,
+           Correspondences2D2D | None]:
     """
     Refine correspondences using AdHoP and perform pose estimation.
 
@@ -442,11 +416,10 @@ def adhop_refinement(
         inliers_mask_refined, opt_reproj_errors_refined, correspondences_2d2d_refined, correspondences_2d3d_refined
 
 
-def proc_ransac_matches(
-        mkpts0: np.ndarray, mkpts1: np.ndarray, ransac_method: str = DEFAULT_RANSAC_METHOD,
-        ransac_reproj_threshold: float = 3.0, ransac_confidence: float = 0.99,
-        ransac_max_iter: int = 2000, geometry_type: str = "Homography", silent: bool = False
-) -> tuple[np.ndarray, np.ndarray] | dict:
+def proc_ransac_matches(mkpts0: np.ndarray, mkpts1: np.ndarray, ransac_method: str = DEFAULT_RANSAC_METHOD,
+                        ransac_reproj_threshold: float = 3.0, ransac_confidence: float = 0.99,
+                        ransac_max_iter: int = 2000, geometry_type: str = "Homography",
+                        silent: bool = False) -> tuple[np.ndarray, np.ndarray] | dict:
     """
     Process matches using RANSAC to filter inliers.
 

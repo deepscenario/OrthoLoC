@@ -5,6 +5,7 @@ import torch
 import numpy as np
 from ortholoc import utils
 
+
 def pose_error(pose_c2w_pred: np.ndarray, pose_c2w_gt: np.ndarray) -> tuple[float, float]:
     """
     Compute the absolute translation and angular errors between predicted and ground truth poses.

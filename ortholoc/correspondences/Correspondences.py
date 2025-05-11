@@ -61,9 +61,8 @@ class Correspondences:
         else:
             raise ValueError("No confidences available to filter correspondences")
 
-    def take_min_max_pts0(
-            self, min_val_0: float, max_val_0: float, min_val_1: float, max_val_1: float, inclusive: bool = True
-    ) -> Self:
+    def take_min_max_pts0(self, min_val_0: float, max_val_0: float, min_val_1: float, max_val_1: float,
+                          inclusive: bool = True) -> Self:
         """
         Filter correspondences based on min and max values for pts0.
         """
@@ -73,9 +72,8 @@ class Correspondences:
                                (self.pts0[:, 1] < max_val_1) if not inclusive else (self.pts0[:, 1] <= max_val_1))
         return self.take(np.bitwise_and(mask0, mask1))
 
-    def take_min_max_pts1(
-            self, min_val_0: float, max_val_0: float, min_val_1: float, max_val_1: float, inclusive: bool = True
-    ) -> Self:
+    def take_min_max_pts1(self, min_val_0: float, max_val_0: float, min_val_1: float, max_val_1: float,
+                          inclusive: bool = True) -> Self:
         """
         Filter correspondences based on min and max values for pts1.
         """

@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import cv2
 
+
 def resize_image(img: np.ndarray, dst_max_size: int) -> np.ndarray:
     """
     Resize an image to fit within a maximum size while maintaining aspect ratio.

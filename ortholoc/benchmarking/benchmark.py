@@ -19,13 +19,10 @@ class Benchmark:
     """
     Benchmark class for evaluating the performance of a localizer using a matcher on a dataset.
     """
-
-    def __init__(
-            self, dataset: OrthoLoC, matcher: Matcher | None, pnp_mode: str, num_points: int | None,
-            output_dir: str, min_conf: float = 0.0, focal_length_init_from_gt: float | None = None,
-            fix_principle_points: bool = True, reprojection_error: float = 5.0, use_intrinsics: bool = True,
-            use_adhop: bool = False
-    ) -> None:
+    def __init__(self, dataset: OrthoLoC, matcher: Matcher | None, pnp_mode: str, num_points: int | None,
+                 output_dir: str, min_conf: float = 0.0, focal_length_init_from_gt: float | None = None,
+                 fix_principle_points: bool = True, reprojection_error: float = 5.0, use_intrinsics: bool = True,
+                 use_adhop: bool = False) -> None:
         """
         Args:
             dataset (OrthoLoC): Dataset to benchmark.
@@ -195,19 +192,19 @@ class Benchmark:
                                     intrinsics_matrix_pred = intrinsics_matrix_pred_refined
                                     correspondences_2d2d_normalized = correspondences_2d2d_refined
 
-                            abs_transl_error, abs_angular_error = utils.metrics.pose_error(pose_c2w_pred,
-                                                                                   sample['pose_query2world'])
+                            abs_transl_error, abs_angular_error = utils.metrics.pose_error(
+                                pose_c2w_pred, sample['pose_query2world'])
 
                             intrinsics_matrix_gt = sample['intrinsics_query']
-                            reproj_errors = utils.metrics.reprojection_error(pts3d=sample['keypoints'],
-                                                                     pose_c2w_pred=pose_c2w_pred,
-                                                                     pose_c2w_gt=sample['pose_query2world'],
-                                                                     intrinsics_matrix_pred=intrinsics_matrix_pred,
-                                                                     intrinsics_matrix_gt=intrinsics_matrix_gt)
+                            reproj_errors = utils.metrics.reprojection_error(
+                                pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred,
+                                pose_c2w_gt=sample['pose_query2world'], intrinsics_matrix_pred=intrinsics_matrix_pred,
+                                intrinsics_matrix_gt=intrinsics_matrix_gt)
 
                             matching_errors = self.dataset.compute_matching_error(sample,
                                                                                   correspondences_2d2d_normalized)
-                            f_error, c_error = utils.metrics.intrinsics_error(intrinsics_matrix_pred, intrinsics_matrix_gt)
+                            f_error, c_error = utils.metrics.intrinsics_error(intrinsics_matrix_pred,
+                                                                              intrinsics_matrix_gt)
                             matching_error = np.nanmedian(matching_errors)
                             reproj_error = np.nanmedian(reproj_errors)
 
@@ -294,10 +291,8 @@ class Benchmark:
         utils.io.save_txt(os.path.join(self.output_dir, f'summary_{self.experiment_name}.txt'), out_string)
 
     @staticmethod
-    def predictions(
-            sample_ids: dict[str, list], poses_pred: dict[str, list], intrinsics_pred: dict[str, list],
-            best_angles: dict[str, float]
-    ) -> str:
+    def predictions(sample_ids: dict[str, list], poses_pred: dict[str, list], intrinsics_pred: dict[str, list],
+                    best_angles: dict[str, float]) -> str:
         """
         Convert the predictions to a string format for saving.
         """
@@ -326,11 +321,10 @@ class Benchmark:
         return out_str
 
     @staticmethod
-    def error_per_sample(
-            sample_ids: dict[str, list], pose_errors: dict[str, list], angular_errors: dict[str, list],
-            best_angles: dict[str, float], matching_errors: dict[str, list], reprojection_errors: dict[str, list],
-            f_errors: dict[str, list], c_errors: dict[str, list]
-    ) -> str:
+    def error_per_sample(sample_ids: dict[str, list], pose_errors: dict[str, list], angular_errors: dict[str, list],
+                         best_angles: dict[str, float], matching_errors: dict[str, list],
+                         reprojection_errors: dict[str, list], f_errors: dict[str, list], c_errors: dict[str,
+                                                                                                         list]) -> str:
         """
         Convert the errors to a string format for saving.
         """
@@ -358,14 +352,12 @@ class Benchmark:
         return out_str
 
     @staticmethod
-    def aggregate_stats(
-            pose_errors: dict[str, list], angular_errors: dict[str, list],
-            durations: dict[str, list], matching_durations: dict[str, list],
-            matching_errors: dict[str, list], reprojection_errors: dict[str, list],
-            f_errors: dict[str, list], c_errors: dict[str, list],
-            thresholds: list[tuple[float, float]] = [(2, 2), (3, 3), (5, 5)],
-            model_size=0.0, model_n_params: int = 0
-    ) -> str:
+    def aggregate_stats(pose_errors: dict[str, list], angular_errors: dict[str, list], durations: dict[str, list],
+                        matching_durations: dict[str, list], matching_errors: dict[str, list],
+                        reprojection_errors: dict[str, list], f_errors: dict[str, list], c_errors: dict[str, list],
+                        thresholds: list[tuple[float,
+                                               float]] = [(2, 2), (3, 3),
+                                                          (5, 5)], model_size=0.0, model_n_params: int = 0) -> str:
         """
         Aggregate the statistics for the benchmark results.
         """

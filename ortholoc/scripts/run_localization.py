@@ -20,6 +20,9 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                      use_adhop: bool = False, covisibility_ratio: float = 1.0, scale_dop_dsm: float = 1.0,
                      scale_query_image: float = 1.0, show: bool = False, fix_principle_points: bool = True,
                      plot_max_pts: int = 1000, fig_ext: str = '.png') -> None:
+    """
+    Run localization on two images or a sample from the OrthoLoC dataset.
+    """
     dataset = None
     sample = None
     if img_path is not None and dop_path is not None and dsm_path is not None:
@@ -55,8 +58,8 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                     scale_query_image))
     elif sample_path is not None:
         dataset = OrthoLoC(sample_paths=[sample_path], return_tensor=False,
-                             use_refined_extrinsics=use_refined_extrinsics, covisibility_ratio=covisibility_ratio,
-                             scale_dop_dsm=scale_dop_dsm, scale_query_image=scale_query_image)
+                           use_refined_extrinsics=use_refined_extrinsics, covisibility_ratio=covisibility_ratio,
+                           scale_dop_dsm=scale_dop_dsm, scale_query_image=scale_query_image)
         sample = dataset[0]
         sample_id = sample['sample_id']
         image_query = sample['image_query']
@@ -127,7 +130,8 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
 
                 transl_error_refined, angular_error_refined = None, None
                 if pose_c2w_gt is not None and pose_c2w_pred_refined is not None:
-                    transl_error_refined, angular_error_refined = utils.metrics.pose_error(pose_c2w_pred_refined, pose_c2w_gt)
+                    transl_error_refined, angular_error_refined = utils.metrics.pose_error(
+                        pose_c2w_pred_refined, pose_c2w_gt)
 
                 if success_refined:
                     title += (f'AdHoP chould have been improved results, since '
@@ -155,7 +159,7 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                             # matching errors plot
                             fig_matching_errors, _ = utils.plot.plot_pts2d(
                                 utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0,
-                                                   w=w0), image_query, show_colorbar=True, alpha=0.5, s=1,
+                                                            w=w0), image_query, show_colorbar=True, alpha=0.5, s=1,
                                 heatmap=dataset.compute_matching_error(sample, correspondences_2d2d),
                                 metrics={'ME': (matching_error, 'px')}, show=True, colorbar_label='ME (px)')
                             utils.io.save_fig(
@@ -215,10 +219,11 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
             title += f'PnP-RPE: median: {np.nanmedian(opt_reproj_errors):.2f}px, mean: {np.nanmean(opt_reproj_errors):.2f}px\n'
 
             if sample is not None and pose_c2w_gt is not None:
-                kpts_reproj_errors = utils.metrics.reprojection_error(pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred,
-                                                              pose_c2w_gt=pose_c2w_gt,
-                                                              intrinsics_matrix_pred=intrinsics_matrix_pred,
-                                                              intrinsics_matrix_gt=intrinsics_matrix_gt)
+                kpts_reproj_errors = utils.metrics.reprojection_error(pts3d=sample['keypoints'],
+                                                                      pose_c2w_pred=pose_c2w_pred,
+                                                                      pose_c2w_gt=pose_c2w_gt,
+                                                                      intrinsics_matrix_pred=intrinsics_matrix_pred,
+                                                                      intrinsics_matrix_gt=intrinsics_matrix_gt)
                 title += f'Kpts-RPE: median: {np.nanmedian(kpts_reproj_errors):.2f}px, mean: {np.nanmean(kpts_reproj_errors):.2f}px\n'
 
             # plot results
@@ -226,20 +231,19 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                 fig_matches, _ = correspondences_2d2d.plot(image_query, image_dop, max_pts=plot_max_pts, title=title,
                                                            fig_scale=1.0, show=show)
                 if output_dir:
-                    utils.io.save_fig(fig_matches, os.path.join(output_dir,
-                                                             f'{sample_id}_{matcher_name}_matches' + fig_ext))
+                    utils.io.save_fig(fig_matches,
+                                      os.path.join(output_dir, f'{sample_id}_{matcher_name}_matches' + fig_ext))
                 if sample is not None and pose_c2w_gt is not None:
                     matching_errors = dataset.compute_matching_error(sample, correspondences_2d2d)
                     matching_error = float(np.nanmedian(matching_errors))
 
                     # matching errors plot
-                    fig_matching_errors, _ = utils.plot.plot_pts2d(utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0,
-                                                                                 w=w0), image_query, show_colorbar=True,
-                                                              alpha=0.5, s=1, metrics={'ME': (matching_error, 'px')},
-                                                              heatmap=matching_errors, show=True,
-                                                              colorbar_label='ME (px)')
+                    fig_matching_errors, _ = utils.plot.plot_pts2d(
+                        utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0, w=w0), image_query,
+                        show_colorbar=True, alpha=0.5, s=1, metrics={'ME': (matching_error, 'px')},
+                        heatmap=matching_errors, show=True, colorbar_label='ME (px)')
                     utils.io.save_fig(fig_matching_errors,
-                                   os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
+                                      os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
 
                     # reprojection plot
                     title = ''
@@ -252,12 +256,17 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                         }, intrinsics_matrix_gt=intrinsics_matrix_gt, show=show, s=2, linewidth=0.5,
                         fig_size=(5, 3.8 if not title else 5), alpha=0.8, marker='X')
                     if output_dir:
-                        utils.io.save_fig(fig_reproj,
-                                       os.path.join(output_dir, f'{sample_id}_{matcher_name}_reprojection' + fig_ext))
+                        utils.io.save_fig(
+                            fig_reproj, os.path.join(output_dir, f'{sample_id}_{matcher_name}_reprojection' + fig_ext))
 
                 if output_dir is not None:
-                    utils.io.save_camera_params(pose_w2c=utils.pose.inv_pose(pose_c2w_pred), intrinsics=intrinsics_matrix_pred,
-                                             path=os.path.join(output_dir, 'camera_params.json'))
+                    utils.io.save_camera_params(pose_w2c=utils.pose.inv_pose(pose_c2w_pred),
+                                                intrinsics=intrinsics_matrix_pred,
+                                                path=os.path.join(output_dir, 'camera_params.json'))
+
+                logger.info(f'Localization successful')
+                logger.info(f'Pose (world to cam): {utils.pose.inv_pose(pose_c2w_pred)}')
+                logger.info(f'Intrinsics: {intrinsics_matrix_pred}')
 
         else:
             logger.warning("Localization failed")
@@ -266,8 +275,7 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
 
 
 def parse_args():
-    argparser = argparse.ArgumentParser(description='Run localization')
-    # inputs
+    argparser = argparse.ArgumentParser(description='Run Localization / Calibration')
     argparser.add_argument('--image', type=str, help='Image path', dest='img_path')
     argparser.add_argument('--dop', type=str, help='DOP path as .tif file', dest='dop_path')
     argparser.add_argument('--dsm', type=str, help='DSM path as .tif file', dest='dsm_path')
@@ -276,29 +284,47 @@ def parse_args():
     argparser.add_argument('--intrinsics', type=str, help='Intrinsics path as .json file', dest='intrinsics_path')
     argparser.add_argument('--extrinsics', type=str, help='GT Extrinsics path as .json file '
                            '(for evaluation) as pose world to cam', dest='extrinsics_path')
-    argparser.add_argument('--matcher', type=str, help='set_name', required=True,
+    argparser.add_argument('--matcher', type=str, help='Matcher name', required=True,
                            choices=['GT'] + list(MATCHER_ZOO.keys()), dest='matcher_name')
-    argparser.add_argument('--pnp_mode', type=str, help='pnp_mode', default='poselib',
-                           choices=['poselib', 'cv2', 'pycolmap'])
-    # options
-    argparser.add_argument('--no_intrinsics', action='store_false', help='Do not use prior intrinsics',
-                           dest='use_intrinsics')
+    argparser.add_argument('--pnp_mode', type=str, default='poselib', choices=['cv2', 'poselib', 'pycolmap'],
+                           help='Library to use for PnP RANSAC')
+    argparser.add_argument('--no_intrinsics', action='store_false',
+                           help='Do not use prior intrinsics (this will run a full calibration)', dest='use_intrinsics')
     argparser.add_argument('--no_fix_principle_points', action='store_false', help='Do not fix principle points',
                            dest='fix_principle_points')
     argparser.add_argument('--use_refined_extrinsics', action='store_true', help='Use refine extrinsics as GT')
-    argparser.add_argument('--angles', nargs='+', type=float, help='angles')
-    argparser.add_argument('--reprojection_error', type=float, help='Reprojection error', default=5.0)
-    argparser.add_argument('--covisibility_ratio', type=float, help='covisibility ratio', default=1.0)
-    argparser.add_argument('--scale_dop_dsm', type=float, help='scale dop dsm', default=1.0)
-    argparser.add_argument('--scale_query_image', type=float, help='scale query image', default=1.0)
-    argparser.add_argument('--num_points', type=int, help='pnp_max_points', required=False)
-    argparser.add_argument('--device', type=str, help='device', default='cuda')
-    argparser.add_argument('--show', action='store_true', help='show')
+    argparser.add_argument(
+        '--angles',
+        nargs='+',
+        type=int,
+        help='This rotates the query image before '
+        'matching and take the best rotation results as the '
+        'final correspondences. If not defined, default '
+        'rotation values will be considered depending on '
+        'the matcher used.',
+    )
+    argparser.add_argument('--reprojection_error', type=float, help='RANSAC reprojection error', default=5.0)
+    argparser.add_argument(
+        '--covisibility_ratio', type=float, help='Covisibility ratio between query '
+        'image and the geodata. Default: 1 '
+        '(maximum possible ratio)', default=1.0)
+    argparser.add_argument('--scale_query_image', type=float, help='Scale of query image, between 0 '
+                           '(exclusive) and 1 (full resolution)', default=1.0)
+    argparser.add_argument('--scale_dop_dsm', type=float, help='Scale of DOP and DSM, between 0 '
+                           '(exclusive) and 1 (full resolution)', default=1.0)
+    argparser.add_argument(
+        '--num_points', type=int, help='Maximum number of point to consider in PnP. '
+        'If not defined, all points will be used')
+    argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
+                           choices=['cuda', 'cpu'])
+    argparser.add_argument('--show', action='store_true', help='Whether to show the results')
     argparser.add_argument('--use_adhop', action='store_true', help='Use Homography Preconditioning')
-    argparser.add_argument('--min_conf', type=float, help='min confidence', default=0.5)
-    argparser.add_argument('--fig_ext', type=str, help='figure extension', default='.png')
-    argparser.add_argument('--plot_max_pts', type=int, help='max pts to visualize', default=1000)
-    argparser.add_argument('--output_dir', type=str, required=False)
+    argparser.add_argument(
+        '--min_conf', type=float, help='Minimum correspondences confidences will be '
+        'used to filter matchings below this value. Default= 0.5', default=0.5)
+    argparser.add_argument('--fig_ext', type=str, help='Figure extension', default='.png')
+    argparser.add_argument('--plot_max_pts', type=int, help='Max number of matchings to visualize', default=1000)
+    argparser.add_argument('--output_dir', type=str, help='Output directory')
 
     args = argparser.parse_args()
     if not args.sample_path:

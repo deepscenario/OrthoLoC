@@ -10,6 +10,10 @@ from pathlib import Path
 import importlib.resources
 import importlib.util
 from loguru import logger
+import os
+import requests
+from bs4 import BeautifulSoup
+
 
 def get_git_commit_id() -> str | None:
     """
@@ -22,6 +26,7 @@ def get_git_commit_id() -> str | None:
     except subprocess.CalledProcessError as e:
         logger.info("Error while getting commit ID:", e.output.decode("utf-8"))
         return None
+
 
 def get_hardware_names() -> tuple[str, str]:
     """
@@ -101,10 +106,8 @@ def human_readable_params(num_params: int) -> str:
     else:
         return f"{num_params / 1_000_000_000_000:.1f}T"
 
-def resolve_asset_path(
-        input_path: str | Path,
-        verbose: bool = True
-) -> Path | None:
+
+def resolve_asset_path(input_path: str | Path, verbose: bool = True) -> Path | None:
     """
     Resolve a path by checking if it exists, if not, try to find it in package assets.
 
@@ -154,10 +157,10 @@ def update_args_with_asset_paths(args: argparse.Namespace) -> argparse.Namespace
     updates = {}
 
     # Get all attributes that might be paths
-    path_attributes = [attr for attr in dir(args)
-                       if not attr.startswith('_') and
-                       isinstance(getattr(args, attr), (str, Path)) and
-                       any(kw in attr.lower() for kw in ['path', 'file', 'dir', 'config', 'model'])]
+    path_attributes = [
+        attr for attr in dir(args) if not attr.startswith('_') and isinstance(getattr(args, attr), (str, Path)) and any(
+            kw in attr.lower() for kw in ['path', 'file', 'dir', 'config', 'model'])
+    ]
 
     for attr in path_attributes:
         original_path = getattr(args, attr)
@@ -167,10 +170,7 @@ def update_args_with_asset_paths(args: argparse.Namespace) -> argparse.Namespace
 
             if resolved_path is not None:
                 setattr(args, attr, resolved_path)
-                updates[attr] = {
-                    'original': original_path,
-                    'resolved': resolved_path
-                }
+                updates[attr] = {'original': original_path, 'resolved': resolved_path}
             else:
                 logger.info(f"Warning: Could not resolve path for '{attr}': {original_path}")
 
@@ -183,3 +183,65 @@ def update_args_with_asset_paths(args: argparse.Namespace) -> argparse.Namespace
             logger.info(f"  Resolved: {paths['resolved']}")
 
     return args
+
+
+def download_file(url: str, save_path: str) -> None:
+    """
+    Downloads a file from a given URL and saves it to the specified path.
+
+    Args:
+        url (str): The URL of the file to download.
+        save_path (str): The local path to save the file.
+    """
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=1024):
+                file.write(chunk)
+        print(f"Downloaded: {save_path}")
+    else:
+        print(f"Failed to download: {url}")
+
+
+def get_file_links(apache_url: str, extensions: list[str]) -> list[str]:
+    """
+    Fetches the file links from an Apache directory listing, filtering by file extensions.
+
+    Args:
+        apache_url (str): The URL of the Apache directory.
+        extensions (list[str]): A list of file extensions to filter by (e.g., ['.zip', '.npz']).
+
+    Returns:
+        list[str]: A list of file URLs matching the specified extensions.
+    """
+    response = requests.get(apache_url)
+    if response.status_code != 200:
+        print(f"Failed to access {apache_url}")
+        return []
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    links = [link.get('href') for link in soup.find_all('a') if link.get('href')]
+    # Filter files by extensions
+    return [f"{apache_url.rstrip('/')}/{href}" for href in links if any(href.endswith(ext) for ext in extensions)]
+
+
+def download_files_from_apache_directory(apache_url: str, save_directory: str, extensions: list[str]) -> None:
+    """
+    Downloads files from an Apache directory, filtered by extensions.
+
+    Args:
+        apache_url (str): The URL of the Apache directory.
+        save_directory (str): The local directory to save the downloaded files.
+        extensions (list[str]): A list of file extensions to filter by (e.g., ['.zip', '.npz']).
+    """
+    os.makedirs(save_directory, exist_ok=True)
+    file_links = get_file_links(apache_url, extensions)
+
+    if not file_links:
+        print("No files found matching the specified extensions.")
+        return
+
+    for file_url in file_links:
+        file_name = os.path.basename(file_url)
+        save_path = os.path.join(save_directory, file_name)
+        download_file(file_url, save_path)

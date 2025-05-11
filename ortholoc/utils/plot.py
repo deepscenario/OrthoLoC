@@ -15,12 +15,8 @@ if PAPER_PLOTS:
     plt.rcParams.update(style)
 
 
-def apply_cmap(
-        data: np.ndarray,
-        cmap_name: str = 'plasma',
-        vmin: float | None = None,
-        vmax: float | None = None
-) -> np.ndarray:
+def apply_cmap(data: np.ndarray, cmap_name: str = 'plasma', vmin: float | None = None,
+               vmax: float | None = None) -> np.ndarray:
     """
     Apply a colormap to data.
 
@@ -109,12 +105,12 @@ def plot_pts2d(pts2d, img: np.ndarray | None = None, ax: plt.Axes | None = None,
         metrics_str = '\n'.join([f"{key}={value[0]:.2f}{value[1]}" for key, value in metrics.items()])
         ax.text(0.02, 0.98, metrics_str, transform=ax.transAxes, verticalalignment='top', horizontalalignment='left',
                 fontsize=10, bbox=dict(
-                boxstyle='round',
-                facecolor='white',
-                alpha=0.8,
-                edgecolor='lightgray',
-                linewidth=1,
-            ))
+                    boxstyle='round',
+                    facecolor='white',
+                    alpha=0.8,
+                    edgecolor='lightgray',
+                    linewidth=1,
+                ))
 
     if title:
         ax.set_title(title.strip())
@@ -226,12 +222,12 @@ def plot_reprojections(image_query, pts3d, pose_c2w_pred: np.ndarray, pose_c2w_g
         # add text to the top left corner similar to legend (same font size)
         ax.text(0.02, 0.98, metrics_str, transform=ax.transAxes, fontproperties=legend_font, verticalalignment='top',
                 horizontalalignment='left', fontsize=10, bbox=dict(
-                boxstyle='round',
-                facecolor='white',
-                alpha=0.8,
-                edgecolor='lightgray',
-                linewidth=1,
-            ))
+                    boxstyle='round',
+                    facecolor='white',
+                    alpha=0.8,
+                    edgecolor='lightgray',
+                    linewidth=1,
+                ))
     if show:
         plt.show()
 

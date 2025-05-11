@@ -16,10 +16,7 @@ from ortholoc.correspondences import Correspondences2D2D
 ##################################
 # Transforms
 #################################
-def point_to_depth_map(
-        point_map: np.ndarray,
-        extrinsics: np.ndarray
-) -> np.ndarray:
+def point_to_depth_map(point_map: np.ndarray, extrinsics: np.ndarray) -> np.ndarray:
     """
     Convert a 3D point map to a depth map using extrinsics.
 
@@ -257,7 +254,7 @@ def fill_gaps(grid: np.ndarray) -> np.ndarray:
     return interpolated_data
 
 
-def dist_to_confidences(distances:  np.ndarray, decay: float =1.0) -> np.ndarray:
+def dist_to_confidences(distances: np.ndarray, decay: float = 1.0) -> np.ndarray:
     """
     Convert distances to confidence scores using an exponential decay function.
 
@@ -302,14 +299,8 @@ def grid_pts3d_to_mask(pts2d: np.ndarray, top_left: np.ndarray, bottom_right: np
     return mask
 
 
-def crop_rasters(
-    point_map: np.ndarray,
-    dsm: np.ndarray,
-    dop: np.ndarray,
-    covisibility_ratio: float,
-    direction: str | None = None,
-    plot: bool = False
-) -> tuple[np.ndarray, np.ndarray, float]:
+def crop_rasters(point_map: np.ndarray, dsm: np.ndarray, dop: np.ndarray, covisibility_ratio: float,
+                 direction: str | None = None, plot: bool = False) -> tuple[np.ndarray, np.ndarray, float]:
     """
     Crop rasters based on covisibility ratio and direction.
 
@@ -325,7 +316,7 @@ def crop_rasters(
         Cropped DSM, DOP, and final covisibility ratio.
     """
     point_map_in_dsm_mask = grid_pts3d_to_mask(pts2d=point_map[np.isfinite(point_map[:, :,
-                                                                           2]), :2], top_left=dsm[0, 0, :2],
+                                                                                     2]), :2], top_left=dsm[0, 0, :2],
                                                bottom_right=dsm[-1, -1, :2], width=dsm.shape[1], height=dsm.shape[0])
     dsm_mask = np.isfinite(dsm[:, :, 2])
     intersection_mask = point_map_in_dsm_mask & dsm_mask
