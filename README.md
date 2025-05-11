@@ -1,6 +1,5 @@
 <div align="center">
 
-  <img src="ortholoc/assets/logo.png" alt="logo" width="200" height="auto" />
   <h1>✈️🌍️: OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata</h1>
 
 <!-- Badges -->
