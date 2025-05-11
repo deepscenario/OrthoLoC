@@ -1,3 +1,2 @@
-from ortholoc.correspondences.Correspondences import Correspondences
-from ortholoc.correspondences.Correspondences2D2D import Correspondences2D2D
-from ortholoc.correspondences.Correspondences2D3D import Correspondences2D3D
+from . import Correspondences, Correspondences2D2D, Correspondences2D3D
+__all__ = ["Correspondences", "Correspondences2D2D", "Correspondences2D3D"]

@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import torch
 import numpy as np
 import cv2
 from packaging import version
 from scipy.spatial.transform import Rotation
 from loguru import logger
+from typing import TYPE_CHECKING
 from imcui.ui.utils import ransac_zoo, DEFAULT_RANSAC_METHOD, _filter_matches_poselib, _filter_matches_opencv
 
-from ortholoc.correspondences import Correspondences2D2D
-from ortholoc.image_matching.Matcher import Matcher
+if TYPE_CHECKING:
+    from ortholoc.correspondences import Correspondences2D2D
+    from ortholoc.image_matching.Matcher import Matcher
 
 try:
     import poselib  # noqa

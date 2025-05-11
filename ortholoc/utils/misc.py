@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 import subprocess
 import cpuinfo
@@ -6,6 +8,7 @@ import psutil
 import argparse
 from pathlib import Path
 import importlib.resources
+from loguru import logger
 
 def get_git_commit_id() -> str | None:
     """
@@ -16,7 +19,7 @@ def get_git_commit_id() -> str | None:
                                             stderr=subprocess.STDOUT).strip().decode("utf-8")
         return commit_id
     except subprocess.CalledProcessError as e:
-        print("Error while getting commit ID:", e.output.decode("utf-8"))
+        logger.info("Error while getting commit ID:", e.output.decode("utf-8"))
         return None
 
 def get_hardware_names() -> tuple[str, str]:
@@ -99,7 +102,6 @@ def human_readable_params(num_params: int) -> str:
 
 def resolve_asset_path(
         input_path: str | Path,
-        asset_folder: str = "data",
         verbose: bool = True
 ) -> Path | None:
     """
@@ -108,7 +110,7 @@ def resolve_asset_path(
     Args:
         input_path: Original path provided
         asset_folder: Subfolder in assets to look for the file
-        verbose: Whether to print info about path resolution
+        verbose: Whether to logger.info info about path resolution
 
     Returns:
         Resolved Path object or None if not found
@@ -119,19 +121,19 @@ def resolve_asset_path(
     # If path exists, return it
     if input_path.exists():
         if verbose:
-            print(f"Using provided path: {input_path}")
+            logger.info(f"Using provided path: {input_path}")
         return input_path
 
     # Try to find in assets
     try:
-        with importlib.resources.files(f'ortholoc.assets.{asset_folder}').joinpath(input_path.name) as asset_path:
+        with importlib.resources.files(f'ortholoc').joinpath(str(input_path)) as asset_path:
             if asset_path.exists():
                 if verbose:
-                    print(f"Found in assets: {asset_path}")
+                    logger.info(f"Found in assets: {asset_path}")
                 return asset_path
     except Exception as e:
         if verbose:
-            print(f"Error accessing assets: {e}")
+            logger.info(f"Error accessing assets: {e}")
 
     return None
 
@@ -168,14 +170,14 @@ def update_args_with_asset_paths(args: argparse.Namespace) -> argparse.Namespace
                     'resolved': resolved_path
                 }
             else:
-                print(f"Warning: Could not resolve path for '{attr}': {original_path}")
+                logger.info(f"Warning: Could not resolve path for '{attr}': {original_path}")
 
-    # Print summary of updates
+    # logger.info summary of updates
     if updates:
-        print("\nPath resolutions:")
+        logger.info("\nPath resolutions:")
         for attr, paths in updates.items():
-            print(f"- {attr}:")
-            print(f"  Original: {paths['original']}")
-            print(f"  Resolved: {paths['resolved']}")
+            logger.info(f"- {attr}:")
+            logger.info(f"  Original: {paths['original']}")
+            logger.info(f"  Resolved: {paths['resolved']}")
 
     return args

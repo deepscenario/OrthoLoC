@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import os
 import numpy as np
@@ -8,13 +10,14 @@ from ortholoc import utils
 
 
 def visualize_sample(
-    dataset_dir: str,
-    n_scenes: int = 5,
-    sample_ids: list | None = None,
-    output_path: str | None = None,
-    select_good_samples: bool = True,
-    with_title: bool = False,
-    show: bool = False,
+        dataset_dir: str,
+        n_scenes: int = 5,
+        sample_ids: list | None = None,
+        output_path: str | None = None,
+        select_good_samples: bool = True,
+        with_title: bool = False,
+        by_groups: bool = False,
+        show: bool = False,
 ) -> None:
     random.seed(47)
     np.random.seed(47)
@@ -23,6 +26,11 @@ def visualize_sample(
     dataset.shuffle()
     dataset.shuffle()
     groups = dataset.sample_ids_by_type
+
+    n_scenes = min(n_scenes, len(dataset))
+
+    if sample_ids is None and not by_groups:
+        sample_ids = random.sample(dataset.sample_ids, n_scenes)
 
     if sample_ids is None:
         sample_ids = []
@@ -69,15 +77,15 @@ def visualize_sample(
 
 
 def parse_args():
-    argparser = argparse.ArgumentParser(description='Visualize the dataset')
-    # inputs
-    argparser.add_argument('--dataset_dir', type=str, help='dataset_dir', required=True)
-    argparser.add_argument('--n_scenes', type=int, help='number of scenes to visualize', default=5)
-    argparser.add_argument('--sample_ids', nargs='+', help='sample_ids to visualize')
-    argparser.add_argument('--show', action='store_true', help='show')
-    argparser.add_argument('--select_good_samples', action='store_true', help='select good samples')
-    argparser.add_argument('--with_title', action='store_true', help='add title to the plot')
-    argparser.add_argument('--output_path', type=str, required=False)
+    argparser = argparse.ArgumentParser(description='Visualize samples of the dataset')
+    argparser.add_argument('--dataset_dir', type=str, help='Dataset directory containing .npz files', required=True)
+    argparser.add_argument('--n_scenes', type=int, help='Number of scenes to visualize', default=5)
+    argparser.add_argument('--sample_ids', nargs='+', help='Specific Sample IDs to visualize')
+    argparser.add_argument('--show', action='store_true', help='Show the plot')
+    argparser.add_argument('--select_good_samples', action='store_true', help='Select samples with good coverage')
+    argparser.add_argument('--with_title', action='store_true', help='Add title to the plot')
+    argparser.add_argument('--output_path', type=str, required=False,
+                           help='Output path to save the plot')
     return utils.misc.update_args_with_asset_paths(argparser.parse_args())
 
 

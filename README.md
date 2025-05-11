@@ -158,7 +158,7 @@ To use the dataset as a PyTorch Dataset, you can do the following:
 from ortholoc.dataset import OrthoLoC
 
 dataset = OrthoLoC(
-    dirpath="./assets/samples",  # path to the dataset
+    dirpath="/media/ussaema/SSD/Projects/OrthoLoC/ortholoc/assets/samples",  # path to the dataset
     sample_paths=None,  # path to the samples (if dirpath is not specified), e.g. ["./assets/samples/highway_rural.npz", "./assets/samples/urban_residential_xDOPDSM.npz"]
     start=0.,  # start of the dataset
     end=1.,  # end of the dataset

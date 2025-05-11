@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import cv2
 import torch
 from torch.utils.data import Dataset
@@ -52,6 +54,13 @@ class OrthoLoC(Dataset):
                                          is not None), 'Either new_size or scale_query_image should be provided'
         assert (new_size is not None) ^ (scale_dop_dsm
                                          is not None), 'Either new_size or scale_dop_dsm should be provided'
+
+        if dirpath is not None:
+            dirpath = utils.misc.resolve_asset_path(dirpath, verbose=False)
+        if sample_paths is not None:
+            for i, sample_path in enumerate(sample_paths):
+                sample_paths[i] = utils.misc.resolve_asset_path(sample_path, verbose=False)
+
         self.name = os.path.basename(dirpath) if dirpath else ''
         self.dirpath = dirpath
         self.return_tensor = return_tensor

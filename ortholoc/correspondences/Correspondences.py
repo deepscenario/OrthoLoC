@@ -1,4 +1,5 @@
-from numpy.ma.core import bitwise_and
+from __future__ import annotations
+
 from typing_extensions import Self
 import numpy as np
 from dataclasses import dataclass
@@ -70,7 +71,7 @@ class Correspondences:
                                (self.pts0[:, 0] < max_val_0) if not inclusive else (self.pts0[:, 0] <= max_val_0))
         mask1 = np.bitwise_and((self.pts0[:, 1] > min_val_1) if not inclusive else (self.pts0[:, 1] >= min_val_1),
                                (self.pts0[:, 1] < max_val_1) if not inclusive else (self.pts0[:, 1] <= max_val_1))
-        return self.take(bitwise_and(mask0, mask1))
+        return self.take(np.bitwise_and(mask0, mask1))
 
     def take_min_max_pts1(
             self, min_val_0: float, max_val_0: float, min_val_1: float, max_val_1: float, inclusive: bool = True
@@ -82,7 +83,7 @@ class Correspondences:
                                (self.pts1[:, 0] < max_val_0) if not inclusive else (self.pts1[:, 0] <= max_val_0))
         mask1 = np.bitwise_and((self.pts1[:, 1] > min_val_1) if not inclusive else (self.pts1[:, 1] >= min_val_1),
                                (self.pts1[:, 1] < max_val_1) if not inclusive else (self.pts1[:, 1] <= max_val_1))
-        return self.take(bitwise_and(mask0, mask1))
+        return self.take(np.bitwise_and(mask0, mask1))
 
     @property
     def is_finite_mask(self) -> np.ndarray:
