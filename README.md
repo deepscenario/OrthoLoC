@@ -128,7 +128,7 @@ pip install -e .
 
 Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/)
 
-#### Notes:
+#### Important Notes:
 
 - You can either download the dataset manually or let our scripts do it for you.
 - Use can directly use urls when using our scripts or relative paths to the dataset.
@@ -140,6 +140,7 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 - The dataset will be downloaded to the default cache directory in your system. E.g. on ubuntu, it will be downloaded to
   `~/.cache/ortholoc/`. You can change the cache directory by setting the environment variable `ORTHOLOC_CACHE_DIR` to
   your desired path.
+- Not setting `--dataset_dir` in the scripts will automatically download the dataset (on-demand) to the cache directory.
 
 ### :file_folder: Structure of the Dataset
 
@@ -307,11 +308,11 @@ visualize-sample \
 
 ### :framed_picture: Visualization of Samples in the Dataset
 
-To create a visualization of all samples in a dataset directory:
+To create a visualization of some samples in a dataset directory:
 
 ```
 visualize-dataset \
-    --dirpath assets/samples/ --output_path --show
+    --dataset_dir assets/samples/ --n_scenes 5 --show
 ```
 
 <a name="License"></a>
