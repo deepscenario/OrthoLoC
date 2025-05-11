@@ -38,6 +38,9 @@ def parse_args():
     return utils.misc.update_args_with_asset_paths(argparser.parse_args())
 
 
-if __name__ == '__main__':
+def main():
     args = parse_args()
     visualize_sample(**vars(args))
+
+if __name__ == '__main__':
+    main()

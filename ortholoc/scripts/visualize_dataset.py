@@ -9,7 +9,7 @@ from ortholoc.dataset import OrthoLoC
 from ortholoc import utils
 
 
-def visualize_sample(
+def visualize_samples(
     dataset_dir: str,
     n_scenes: int = 5,
     sample_ids: list | None = None,
@@ -91,6 +91,9 @@ def parse_args():
     return utils.misc.update_args_with_asset_paths(argparser.parse_args())
 
 
-if __name__ == '__main__':
+def main():
     args = parse_args()
-    visualize_sample(**vars(args))
+    visualize_samples(**vars(args))
+
+if __name__ == '__main__':
+    main()
