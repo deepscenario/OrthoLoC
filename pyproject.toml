@@ -11,12 +11,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 readme = "README.md"
-
-[tool.hatch.build]
-include = [
-  "ortholoc/assets/*"
-]
-
+license = {text = "CC BY-NC-SA 4.0"}
 dependencies = [
   "roma",
   "loguru",
@@ -39,6 +34,11 @@ run-matching = "ortholoc.scripts.run_matching:main"
 visualize_sample = "ortholoc.scripts.visualize_sample:main"
 visualize_dataset = "ortholoc.scripts.visualize_dataset:main"
 
+[tool.hatch.build]
+include = [
+  "ortholoc/*"
+]
+
 [project.urls]
-Homepage = "https://github.com/deepscanrio/OrthoLoC"
+Homepage = "https://deepscenario.github.io/OrthoLoC"
 Bug_Tracker = "https://github.com/deepscanrio/OrthoLoC/issues"
