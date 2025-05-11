@@ -1,0 +1,3 @@
+from ortholoc.correspondences.Correspondences import Correspondences
+from ortholoc.correspondences.Correspondences2D2D import Correspondences2D2D
+from ortholoc.correspondences.Correspondences2D3D import Correspondences2D3D

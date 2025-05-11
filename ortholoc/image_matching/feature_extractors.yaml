@@ -1,0 +1,276 @@
+alike:
+  model:
+    detection_threshold: 0.5
+    max_keypoints: 5000
+    multiscale: false
+    name: alike
+    sub_pixel: false
+    top_k: -1
+    use_relu: true
+  output: feats-alike-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+aliked-n16:
+  model:
+    detection_threshold: 0.2
+    max_num_keypoints: -1
+    model_name: aliked-n16
+    name: aliked
+    nms_radius: 2
+  output: feats-aliked-n16
+  preprocessing:
+    grayscale: false
+    resize_max: 1024
+aliked-n16-rot:
+  model:
+    detection_threshold: 0.2
+    max_num_keypoints: -1
+    model_name: aliked-n16rot
+    name: aliked
+    nms_radius: 2
+  output: feats-aliked-n16-rot
+  preprocessing:
+    grayscale: false
+    resize_max: 1024
+cosplace:
+  model:
+    name: cosplace
+  output: global-feats-cosplace
+  preprocessing:
+    resize_max: 1024
+d2net-ms:
+  model:
+    max_keypoints: 5000
+    multiscale: true
+    name: d2net
+  output: feats-d2net-ms-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+d2net-ss:
+  model:
+    max_keypoints: 5000
+    multiscale: false
+    name: d2net
+  output: feats-d2net-ss-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+darkfeat:
+  model:
+    max_keypoints: 5000
+    name: darkfeat
+    reliability_threshold: 0.7
+    repetability_threshold: 0.7
+  output: feats-darkfeat-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 480
+    resize_max: 1600
+    width: 640
+dedode:
+  model:
+    max_keypoints: 5000
+    name: dedode
+  output: feats-dedode-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 768
+    resize_max: 1600
+    width: 768
+dir:
+  model:
+    name: dir
+  output: global-feats-dir
+  preprocessing:
+    resize_max: 1024
+disk:
+  model:
+    max_keypoints: 5000
+    name: disk
+  output: feats-disk-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+eigenplaces:
+  model:
+    name: eigenplaces
+  output: global-feats-eigenplaces
+  preprocessing:
+    resize_max: 1024
+example:
+  model:
+    keypoint_threshold: 0.1
+    max_keypoints: 2000
+    model_name: model.pth
+    name: example
+  output: feats-example-n2000-r1024
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 768
+    resize_max: 1024
+    width: 768
+hardnet:
+  model:
+    descriptor: hardnet
+    max_keypoints: 5000
+    name: dog
+  output: feats-hardnet-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+lanet:
+  model:
+    keypoint_threshold: 0.1
+    max_keypoints: 5000
+    name: lanet
+  output: feats-lanet-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+netvlad:
+  model:
+    name: netvlad
+  output: global-feats-netvlad
+  preprocessing:
+    resize_max: 1024
+openibl:
+  model:
+    name: openibl
+  output: global-feats-openibl
+  preprocessing:
+    resize_max: 1024
+r2d2:
+  model:
+    max_keypoints: 5000
+    name: r2d2
+    reliability_threshold: 0.7
+    repetability_threshold: 0.7
+  output: feats-r2d2-n5000-r1024
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 480
+    resize_max: 1024
+    width: 640
+rootsift:
+  model:
+    descriptor: rootsift
+    max_keypoints: 5000
+    name: dog
+  output: feats-rootsift-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+rord:
+  model:
+    max_keypoints: 5000
+    multiscale: false
+    name: rord
+  output: feats-rord-ss-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600
+sfd2:
+  model:
+    max_keypoints: 4096
+    name: sfd2
+  output: feats-sfd2-n4096-r1600
+  preprocessing:
+    conf_th: 0.001
+    force_resize: true
+    grayscale: false
+    height: 480
+    multiscale: false
+    resize_max: 1600
+    scales:
+    - 1.0
+    width: 640
+sift:
+  model:
+    max_keypoints: 5000
+    name: sift
+    rootsift: true
+  output: feats-sift-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+sosnet:
+  model:
+    descriptor: sosnet
+    max_keypoints: 5000
+    name: dog
+  output: feats-sosnet-n5000-r1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+superpoint_aachen:
+  model:
+    keypoint_threshold: 0.005
+    max_keypoints: 4096
+    name: superpoint
+    nms_radius: 3
+  output: feats-superpoint-n4096-r1024
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+superpoint_inloc:
+  model:
+    keypoint_threshold: 0.005
+    max_keypoints: 4096
+    name: superpoint
+    nms_radius: 4
+  output: feats-superpoint-n4096-r1600
+  preprocessing:
+    grayscale: true
+    resize_max: 1600
+superpoint_max:
+  model:
+    keypoint_threshold: 0.015
+    max_keypoints: 4096
+    name: superpoint
+    nms_radius: 3
+  output: feats-superpoint-n4096-rmax1600
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1600
+    width: 640
+xfeat:
+  model:
+    max_keypoints: 5000
+    name: xfeat
+  output: feats-xfeat-n5000-r1600
+  preprocessing:
+    grayscale: false
+    resize_max: 1600

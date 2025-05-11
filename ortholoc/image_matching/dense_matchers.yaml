@@ -1,0 +1,151 @@
+aspanformer:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1024
+    width: 640
+cotr:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 480
+    resize_max: 1024
+    width: 640
+dkm:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 384
+    resize_max: null
+    width: 512
+duster:
+  preprocessing:
+    dfactor: 16
+    grayscale: false
+    resize_max: 512
+eloftr:
+  preprocessing:
+    dfactor: 32
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: null
+    width: 640
+gim(dkm):
+  preprocessing:
+    dfactor: 1
+    force_resize: true
+    grayscale: false
+    height: 672
+    resize_max: null
+    width: 896
+gluestick:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1024
+    width: 640
+loftr:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: null
+    width: 640
+loftr_aachen:
+  preprocessing:
+    dfactor: 8
+    grayscale: true
+    resize_max: 1024
+loftr_superpoint:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: null
+    width: 640
+mast3r:
+  preprocessing:
+    dfactor: 16
+    grayscale: false
+    resize_max: 512
+minima_loftr:
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    height: 480
+    resize_max: null
+    width: 640
+minima_roma:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 672
+    resize_max: null
+    width: 672
+omniglue:
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: false
+    height: 480
+    resize_max: 1024
+    width: 640
+roma:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: false
+    height: 672
+    resize_max: null
+    width: 672
+sold2:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1024
+    width: 640
+topicfm:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: 1024
+    width: 640
+xfeat_dense:
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: false
+    height: 480
+    resize_max: 1024
+    width: 640
+xfeat_lightglue:
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: false
+    height: 480
+    resize_max: 1024
+    width: 640
+xoftr:
+  preprocessing:
+    dfactor: 8
+    force_resize: true
+    grayscale: true
+    height: 480
+    resize_max: null
+    width: 640

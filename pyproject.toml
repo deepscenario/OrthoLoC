@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ortholoc"
+version = "1.0.0"
+description = "Ortholoc Python library"
+authors = [
+  { name = "DeepScenario 2025 - Oussema Dhaouadi" }
+]
+requires-python = ">=3.10"
+readme = "README.md"
+classifiers = [
+  "Programming Language :: Python :: >= 3.10",
+  "License :: CC BY-NC-SA 4.0 License",
+  "Operating System :: OS Independent",
+]
+
+
+[tool.hatch.build]
+include = [
+  "ortholoc/assets/*"
+]
+
+dependencies = [
+  "roma",
+  "loguru",
+  "imcui",
+  "torch",
+  "rasterio",
+  "py-cpuinfo",
+  "gputil",
+  "psutil",
+  "opencv-python",
+  "torchvision",
+  "tueplots",
+  "packaging"
+]
+
+[project.scripts]
+run-benchmark = "ortholoc.scripts.run_benchmark:main"
+run-localization = "ortholoc.scripts.run_localization:main"
+run-matching = "ortholoc.scripts.run_matching:main"
+visualize_sample = "ortholoc.scripts.visualize_sample:main"
+visualize_dataset = "ortholoc.scripts.visualize_dataset:main"
+
+[project.urls]
+Homepage = "https://github.com/deepscanrio/OrthoLoC"
+Bug_Tracker = "https://github.com/deepscanrio/OrthoLoC/issues"

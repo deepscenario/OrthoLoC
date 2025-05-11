@@ -1,0 +1,141 @@
+Dual-Softmax:
+  model:
+    inv_temperature: 20
+    match_threshold: 0.01
+    name: dual_softmax
+  output: matches-Dual-Softmax
+NN-mutual:
+  model:
+    do_mutual_check: true
+    match_threshold: 0.2
+    name: nearest_neighbor
+  output: matches-NN-mutual
+NN-ratio:
+  model:
+    do_mutual_check: true
+    match_threshold: 0.2
+    name: nearest_neighbor
+    ratio_threshold: 0.8
+  output: matches-NN-mutual-ratio.8
+NN-superpoint:
+  model:
+    distance_threshold: 0.7
+    do_mutual_check: true
+    match_threshold: 0.2
+    name: nearest_neighbor
+  output: matches-NN-mutual-dist.7
+adalam:
+  model:
+    match_threshold: 0.2
+    name: adalam
+  output: matches-adalam
+aliked-lightglue:
+  model:
+    depth_confidence: 0.95
+    features: aliked
+    match_threshold: 0.2
+    model_name: aliked_lightglue.pth
+    name: lightglue
+    width_confidence: 0.99
+  output: matches-aliked-lightglue
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
+disk-lightglue:
+  model:
+    depth_confidence: 0.95
+    features: disk
+    match_threshold: 0.2
+    model_name: disk_lightglue.pth
+    name: lightglue
+    width_confidence: 0.99
+  output: matches-disk-lightglue
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
+imp:
+  model:
+    match_threshold: 0.2
+    name: imp
+  output: matches-imp
+sgmnet:
+  model:
+    conf_bar:
+    - 1.11
+    - 0.1
+    detach_iter: 1000000
+    head: 4
+    layer_num: 9
+    match_threshold: 0.2
+    name: sgmnet
+    net_channels: 128
+    seed_radius_coe: 0.01
+    seed_top_k:
+    - 256
+    - 256
+    seedlayer:
+    - 0
+    - 6
+    sink_iter:
+    - 10
+    - 100
+    use_mc_seeding: true
+    use_score_encoding: false
+  output: matches-sgmnet
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
+sift-lightglue:
+  model:
+    add_scale_ori: true
+    depth_confidence: 0.95
+    features: sift
+    match_threshold: 0.2
+    model_name: sift_lightglue.pth
+    name: lightglue
+    width_confidence: 0.99
+  output: matches-sift-lightglue
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
+superglue:
+  model:
+    match_threshold: 0.2
+    name: superglue
+    sinkhorn_iterations: 50
+    weights: outdoor
+  output: matches-superglue
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
+superglue-fast:
+  model:
+    match_threshold: 0.2
+    name: superglue
+    sinkhorn_iterations: 5
+    weights: outdoor
+  output: matches-superglue-it5
+superpoint-lightglue:
+  model:
+    depth_confidence: 0.95
+    features: superpoint
+    match_threshold: 0.2
+    model_name: superpoint_lightglue.pth
+    name: lightglue
+    width_confidence: 0.99
+  output: matches-lightglue
+  preprocessing:
+    dfactor: 8
+    force_resize: false
+    grayscale: true
+    resize_max: 1024
