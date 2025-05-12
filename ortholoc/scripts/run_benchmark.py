@@ -21,7 +21,7 @@ def run_benchmark(dataset_dir: str, matcher_name: str, output_dir: str, pnp_mode
     if device == 'cuda':
         assert torch.cuda.is_available(), "CUDA is not available, please use CPU"
     # load dataset
-    dataset = OrthoLoC(dirpath=dataset_dir, limit_size=limit_size, return_tensor=False, mode=mode,
+    dataset = OrthoLoC(dataset_dir=dataset_dir, limit_size=limit_size, return_tensor=False, mode=mode,
                        use_refined_extrinsics=use_refined_extrinsics, scale_query_image=scale_query_image,
                        scale_dop_dsm=scale_dop_dsm, covisibility_ratio=covisibility_ratio)
     # load matcher

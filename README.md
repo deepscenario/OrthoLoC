@@ -82,7 +82,7 @@ imagery using orthophotos and digital surface models.
 ## :bar_chart: Dataset Samples
 
 <div align="center"> 
-  <img src="ortholoc/assets/samples_viz.jpg" alt="Dataset Samples" />
+  <img src="ortholoc/assets/demo/samples_viz.jpg" alt="Dataset Samples" />
 </div>
 
 <a name="Getting-Started"></a>
@@ -132,9 +132,9 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 
 - You can either download the dataset manually or let our scripts do it for you.
 - Use can directly use urls when using our scripts or relative paths to the dataset.
-    - Example of a relative path: `"tiny/highway_forest.npz"` will automatically
-      download https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/tiny/highway_forest.npz
-    - Example of an URL: `"https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/"` as dirpath of
+    - Example of a relative path: `"demo/samples/highway_forest.npz"` will automatically
+      download https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/demo/samples/highway_forest.npz
+    - Example of an URL: `"https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/"` as dataset_dir of
       the dataset
       will automatically download the full folder.
 - The dataset will be downloaded to the default cache directory in your system. E.g. on ubuntu, it will be downloaded to
@@ -155,6 +155,9 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 │   ├── urban_residential_intrinsics.json  # intrinsics of the query image as json file
 │   ├── urban_residential_xDOP.tif         # DOP with cross domain as tif file
 │   ├── urban_residential_xDSM.tif         # DSM with cross domain as tif file
+│   ├── samples
+│   │   ├── highway_forest.npz
+│   │   ├──  ...
 ├── full
 │   ├── train
 │   │   ├── L01_R0000.npz
@@ -168,12 +171,9 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 │   ├── test_outPlace
 │   │   ├── L08_R0000.npz
 │   │   ├──  ...
-├── tiny
-│   ├── highway_forest.npz
-│   ├──  ...
 ```
 
-The folder demo contains data in raw format (query image as .jpg and the geodata as .tif files). The folder tiny contains a small subset of the dataset for testing and debugging purposes. The folder full
+The folder demo contains data in raw format (query image as .jpg and the geodata as .tif files) as well as folder called samples containing a small subset of the dataset for quick testing and debugging purposes. The folder full
 contains the full dataset. The dataset is divided into four parts: train, val, test_inPlace, test_outPlace. The train and val
 folders contain the samples for training and validation. The test_inPlace and test_outPlace folders contain the samples
 for testing. The test_inPlace samples are taken from the same locations as in the train and val samples, while the
@@ -200,16 +200,12 @@ keys: ['sample_id', 'image_query', 'point_map', 'image_dop', 'dsm', 'scale', 'ex
 - **image_dop**: The DOP image as numpy array of shape (H_geo, W_geo, 3), H_geo = W_geo = 1024
 - **dsm**: The DSM image as numpy array of shape (H_geo, W_geo, 3), H_geo = W_geo = 1024
 - **scale**: The scale of a single pixel in the DOP and DSM images in meters
-- **extrinsics**: The extrinsics (world to cam) of the query image as numpy array of shape (3, 4)
+- **extrinsics**: The extrinsics (world to cam) of the query image as numpy array of shape (3, 4) derived from 3D reconstruction
 - **intrinsics**: The intrinsics of the query image as numpy array of shape (3, 3)
 - **keypoints**: The 3D keypoints of the query image as numpy array of shape (N, 3)
 - **vertices**: The 3D vertices of the local mesh as numpy array of shape (M, 3)
 - **faces**: The faces of the local mesh as numpy array of shape (L, 3)
-- **extrinsics_refined**: The refined extrinsics (world to cam) of the query image as numpy array (overfitted pose to
-  the raster elevations, i.e. we refined the pose by establishing GT matches between the query image and the DOP/DSM
-  images and solving the pose using PnP Ransac. The pose is kinda refined to make sure that the GT pose is eliminating
-  rasterization errors). Note that we don't use this pose for our benchmarking. The purpose was to deliver this data for
-  researchers who want to use the dataset for other purposes (e.g. Training).
+- **extrinsics_refined**: Camera pose parameters as numpy array of shape (3, 4) optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC. Provided for research purposes but not used in official benchmarking.
 
 <a name="Usage"></a>
 
@@ -221,9 +217,9 @@ To use the dataset as a PyTorch Dataset, you can do the following:
 from ortholoc.dataset import OrthoLoC
 
 dataset = OrthoLoC(
-    dirpath=None,  # path to the dataset, if empty, the dataset will be downloaded automatically
-    sample_paths=None,  # path to the samples (cannot be specified when dirpath is set), e.g. ["demo/highway_rural.npz", "demo/urban_residential_xDOPDSM.npz"]
-    set_name=None,  # name of the set (full, train, val, test_inPlace, test_outPlace), if None, all samples will be used
+    dataset_dir=None,  # path to the dataset, if empty, the dataset will be downloaded automatically
+    sample_paths=None,  # path to the samples (cannot be specified when dataset_dir is set), e.g. ["demo/samples/highway_rural.npz", "demo/samples/urban_residential_xDOPDSM.npz"]
+    set_name='all',  # name of the set (all, train, val, test_inPlace, test_outPlace)
     start=0.,  # start of the dataset
     end=1.,  # end of the dataset
     mode=0,  # mode 0 for all samples, 1 for samples with same UAV imagery and geodata domain, 2 for samples with DOP domain shift, 3 for samples with DOP and DSM domains shift
@@ -234,7 +230,7 @@ dataset = OrthoLoC(
     scale_dop_dsm=1.0,  # scale of the DOP and DSM images
     gt_matching_confidences_decay=1.0,  # decay of the matching confidences (the larger the less confident will be the GT for non-unique points like points on facades)
     covisibility_ratio=1.0,  # ratio of the covisibility (0.0 to 1.0, 0.0 exclusive, the larger the more area in the geodata will be visible for the UAV)
-    return_tensor=False  # return the samples while iterating over the dataset as dict of torch tensors
+    return_tensor=False,  # return the samples while iterating over the dataset as dict of torch tensors
     predownload=False,  # if True, it will download the dataset while constructing the dataset object, otherwise it will download while iterating over the dataset
 )
 ```
@@ -253,8 +249,7 @@ All the weights for matching algorithms will be downloaded automatically.
 To run the image matching from a sample of the dataset or from two images, you can do the following:
 
 ```
-run-matching \
-    --sample assets/samples/urban_residential_xDOPDSM.npz --matcher Mast3R --device cuda --angles 0 --show  
+run-matching --sample assets/demo/samples/urban_residential_xDOPDSM.npz --matcher Mast3R --device cuda --angles 0 --show  
 ```
 
 <a name="Localization-and-Calibration"></a>
@@ -264,15 +259,13 @@ run-matching \
 To run the localization and/or calibration from a sample of the dataset or from custom data, you can do the following:
 
 ```
-run-localization \
-    --sample assets/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --show 
+run-localization --sample assets/demo/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --show 
 ```
 
 You can use your own images and geodata by specifying the paths to the files directly:
 
 ```
-run-localization \
-    --image assets/demo/urban_residential.jpg --dop assets/demo/urban_residential_DOP.tif --dsm assets/demo/urban_residential_DSM.tif --intrinsics assets/demo/urban_residential_intrinsics.json --matcher Mast3R --device cuda --angles 0 --show 
+run-localization --image assets/demo/urban_residential.jpg --dop assets/demo/urban_residential_DOP.tif --dsm assets/demo/urban_residential_DSM.tif --intrinsics assets/demo/urban_residential_intrinsics.json --matcher Mast3R --device cuda --angles 0 --show 
 ```
 
 **Important notes:**
@@ -289,8 +282,7 @@ run-localization \
 To benchmark performance across a set of samples from the dataset or custom data:
 
 ```
-run-benchmark \
-    --dataset_dir assets/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
+run-benchmark --dataset_dir assets/demo/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
 ```
 
 <a name="Visualization-of-a-Sample"></a>
@@ -300,8 +292,7 @@ run-benchmark \
 To visualize a single sample from the dataset:
 
 ```
-visualize-sample \
-    --sample assets/samples/highway_rural.npz --show
+visualize-sample --sample assets/demo/samples/highway_rural.npz --show
 ```
 
 <a name="Visualization-of-Dataset-Samples"></a>
@@ -311,8 +302,7 @@ visualize-sample \
 To create a visualization of some samples in a dataset directory:
 
 ```
-visualize-dataset \
-    --dataset_dir assets/samples/ --n_scenes 5 --show
+visualize-dataset --dataset_dir assets/demo/samples/ --n_scenes 5 --show
 ```
 
 <a name="License"></a>

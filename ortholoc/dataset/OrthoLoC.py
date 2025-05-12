@@ -19,7 +19,7 @@ from ortholoc.correspondences import Correspondences2D2D
 
 class OrthoLoC(Dataset):
 
-    def __init__(self, dirpath: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
+    def __init__(self, dataset_dir: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
                  end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0, set_name: str = 'all',
                  new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
                  scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
@@ -27,7 +27,7 @@ class OrthoLoC(Dataset):
                  predownload: bool = False) -> None:
         """
         Args:
-            dirpath: path to the directory containing the samples
+            dataset_dir: path to the directory containing the samples
             sample_paths: list of paths to the samples
             seed: random seed for shuffling the samples
             start: start ratio of the samples to load
@@ -53,31 +53,31 @@ class OrthoLoC(Dataset):
         assert set_name in ('all', 'train', 'val', 'test_inPlace', 'test_outPlace'), \
             'set_name should be all, train, val, test_inPlace or test_outPlace'
 
-        if dirpath is not None:
-            assert sample_paths is None, 'Either dirpath or sample_paths should be provided'
+        if dataset_dir is not None:
+            assert sample_paths is None, 'Either dataset_dir or sample_paths should be provided'
         if sample_paths is not None:
-            assert dirpath is None, 'Either dirpath or sample_paths should be provided'
+            assert dataset_dir is None, 'Either dataset_dir or sample_paths should be provided'
 
         if set_name != 'all':
             assert sample_paths is None, 'set_name should not be used with sample_paths'
 
-        if dirpath is None and sample_paths is None:
-            dirpath = os.path.join(utils.io.DATASET_URL, 'full')
+        if dataset_dir is None and sample_paths is None:
+            dataset_dir = os.path.join(utils.io.DATASET_URL, 'full')
 
-        if dirpath is not None and set_name is not None and set_name != 'all':
-            dirpath = os.path.join(dirpath, set_name)
+        if dataset_dir is not None and set_name is not None and set_name != 'all':
+            dataset_dir = os.path.join(dataset_dir, set_name)
 
-        if dirpath is not None:
+        if dataset_dir is not None:
             sample_paths = []
-            if dirpath.startswith('http'):
+            if dataset_dir.startswith('http'):
                 for setname in ('train', 'val', 'test_inPlace', 'test_outPlace') if set_name == 'all' else (set_name,):
-                    sample_paths += utils.io.get_file_links(os.path.join(dirpath, setname), pattern=rf"^.*\.npz$")
+                    sample_paths += utils.io.get_file_links(os.path.join(dataset_dir, setname), pattern=rf"^.*\.npz$")
             else:
-                dirpath_assets = utils.io.resolve_asset_path(dirpath, verbose=False)
-                dirpath = dirpath_assets or dirpath
+                dataset_dir_assets = utils.io.resolve_asset_path(dataset_dir, verbose=False)
+                dataset_dir = dataset_dir_assets or dataset_dir
                 if set_name != 'all':
-                    dirpath = os.path.join(dirpath, set_name)
-                sample_paths = utils.io.find_files(dirpath, suffix='.npz', recursive=True)
+                    dataset_dir = os.path.join(dataset_dir, set_name)
+                sample_paths = utils.io.find_files(dataset_dir, suffix='.npz', recursive=True)
             sample_paths = sorted(sample_paths)
 
         assert (new_size is not None) ^ (scale_query_image
@@ -85,14 +85,14 @@ class OrthoLoC(Dataset):
         assert (new_size is not None) ^ (scale_dop_dsm
                                          is not None), 'Either new_size or scale_dop_dsm should be provided'
 
-        assert len(sample_paths) > 0, f'No samples found in {dirpath}' if dirpath else 'No samples provided'
+        assert len(sample_paths) > 0, f'No samples found in {dataset_dir}' if dataset_dir else 'No samples provided'
         if predownload:
             for i, sample_path in enumerate(sample_paths):
                 sample_paths[i] = utils.io.resolve_path(sample_path, verbose=False)
 
         self.files = sample_paths
-        self.name = os.path.basename(dirpath) if dirpath else ''
-        self.dirpath = dirpath
+        self.name = os.path.basename(dataset_dir) if dataset_dir else ''
+        self.dataset_dir = dataset_dir
         self.return_tensor = return_tensor
         self.overfitting_mode = False
         self.use_refined_extrinsics = use_refined_extrinsics
@@ -125,8 +125,8 @@ class OrthoLoC(Dataset):
         self.sample_ids = [os.path.splitext(os.path.basename(f))[0] for f in self.files]
         self.new_size = new_size
 
-        assert len(self) > 0, f'Dataset is empty. Make sure that the path contains .npz files: {dirpath}' \
-            if dirpath else 'No samples provided'
+        assert len(self) > 0, f'Dataset is empty. Make sure that the path contains .npz files: {dataset_dir}' \
+            if dataset_dir else 'No samples provided'
 
     def __len__(self) -> int:
         return len(self.files)

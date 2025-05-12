@@ -241,8 +241,10 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                         utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0, w=w0), image_query,
                         show_colorbar=True, alpha=0.5, s=1, metrics={'ME': (matching_error, 'px')},
                         title=title, heatmap=matching_errors, show=True, colorbar_label='ME (px)')
-                    utils.io.save_fig(fig_matching_errors,
-                                      os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
+
+                    if output_dir:
+                        utils.io.save_fig(fig_matching_errors,
+                                          os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
 
                     # reprojection plot
                     fig_reproj, _ = utils.plot.plot_reprojections(

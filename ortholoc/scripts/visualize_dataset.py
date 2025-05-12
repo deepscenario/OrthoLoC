@@ -25,7 +25,7 @@ def visualize_samples(
     random.seed(47)
     np.random.seed(47)
 
-    dataset = OrthoLoC(dirpath=dataset_dir, return_tensor=False)
+    dataset = OrthoLoC(dataset_dir=dataset_dir, return_tensor=False)
     dataset.shuffle()
     dataset.shuffle()
     groups = dataset.sample_ids_by_type

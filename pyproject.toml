@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "ortholoc"
 version = "1.0.0"
-description = "Ortholoc Python library"
+description = "OrthoLoC Python library"
 authors = [
   { name = "DeepScenario 2025 - Oussema Dhaouadi" }
 ]
@@ -21,7 +21,7 @@ dependencies = [
   "py-cpuinfo",
   "gputil",
   "psutil",
-  "opencv-python",
+  "opencv-python-headless",
   "torchvision",
   "tueplots",
   "packaging",
