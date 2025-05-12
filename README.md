@@ -69,7 +69,7 @@ imagery using orthophotos and digital surface models.
 - **🔄 Multi-viewpoint:** Diverse viewpoints with wide camera angles (tilting: 0°-86.8°), offering challenging and
   dynamic perspectives.
 - **🌍 Multi-geographic Environments:** Coverage of **urban** 🏙️, **rural** 🌾, **highway** 🚗, and **suburban** 🏡
-  landscapes, with high-res geodata alignment for varied terrain.
+  landscapes, with high-res geodata alignment.
 - **📍 High-precision Ground-truth:** Paired UAV-geodata images for precise localization and calibration, minimizing
   retrieval errors and ensuring accuracy.
 - **🌐 Geospatial Alignment:** Well-aligned orthographic maps (orthophotos and elevation maps) for precise UAV
@@ -131,10 +131,11 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 #### Important Notes:
 
 - You can either download the dataset manually or let our scripts do it for you.
-- Use can directly use urls when using our scripts or relative paths to the dataset.
+- You can directly use urls when using our scripts or relative paths to the dataset.
     - Example of a relative path: `"demo/samples/highway_forest.npz"` will automatically
       download https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/demo/samples/highway_forest.npz
-    - Example of an URL: `"https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/"` as dataset_dir of
+    - Example of an URL: `"https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/"` as
+      dataset_dir of
       the dataset
       will automatically download the full folder.
 - The dataset will be downloaded to the default cache directory in your system. E.g. on ubuntu, it will be downloaded to
@@ -147,7 +148,7 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 <a name="Structure-of-the-Dataset"></a>
 
 ```
-├── demo                                   # example data of real deployment
+├── demo                                   # example data
 │   ├── urban_residential.jpg              # query image
 │   ├── urban_residential_DOP.tif          # DOP image as tif file
 │   ├── urban_residential_DSM.tif          # DSM image as tif file
@@ -155,7 +156,7 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 │   ├── urban_residential_intrinsics.json  # intrinsics of the query image as json file
 │   ├── urban_residential_xDOP.tif         # DOP with cross domain as tif file
 │   ├── urban_residential_xDSM.tif         # DSM with cross domain as tif file
-│   ├── samples
+│   ├── samples                            # few samples from the dataset as .npz files
 │   │   ├── highway_forest.npz
 │   │   ├──  ...
 ├── full
@@ -173,8 +174,10 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 │   │   ├──  ...
 ```
 
-The folder demo contains data in raw format (query image as .jpg and the geodata as .tif files) as well as folder called samples containing a small subset of the dataset for quick testing and debugging purposes. The folder full
-contains the full dataset. The dataset is divided into four parts: train, val, test_inPlace, test_outPlace. The train and val
+The folder demo contains data in raw format (query image as .jpg and the geodata as .tif files) as well as folder called
+samples containing a small subset of the dataset for quick testing and debugging purposes. The folder full
+contains the full dataset. The dataset is divided into four parts: train, val, test_inPlace, test_outPlace. The train
+and val
 folders contain the samples for training and validation. The test_inPlace and test_outPlace folders contain the samples
 for testing. The test_inPlace samples are taken from the same locations as in the train and val samples, while the
 test_outPlace samples are taken from different locations.
@@ -200,12 +203,16 @@ keys: ['sample_id', 'image_query', 'point_map', 'image_dop', 'dsm', 'scale', 'ex
 - **image_dop**: The DOP image as numpy array of shape (H_geo, W_geo, 3), H_geo = W_geo = 1024
 - **dsm**: The DSM image as numpy array of shape (H_geo, W_geo, 3), H_geo = W_geo = 1024
 - **scale**: The scale of a single pixel in the DOP and DSM images in meters
-- **extrinsics**: The extrinsics (world to cam) of the query image as numpy array of shape (3, 4) derived from 3D reconstruction
+- **extrinsics**: The extrinsics (world to cam) of the query image as numpy array of shape (3, 4) derived from 3D
+  reconstruction
 - **intrinsics**: The intrinsics of the query image as numpy array of shape (3, 3)
 - **keypoints**: The 3D keypoints of the query image as numpy array of shape (N, 3)
 - **vertices**: The 3D vertices of the local mesh as numpy array of shape (M, 3)
 - **faces**: The faces of the local mesh as numpy array of shape (L, 3)
-- **extrinsics_refined**: Camera pose parameters as numpy array of shape (3, 4) optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC. Provided for research purposes but not used in official benchmarking.
+- **extrinsics_refined**: Camera pose parameters as numpy array of shape (3, 4) optimized to compensate for
+  rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth
+  correspondences between query images and DOP/DSM data via PnP RANSAC. Provided for research purposes but not used in
+  official benchmarking.
 
 <a name="Usage"></a>
 
@@ -315,6 +322,14 @@ Distributed under CC BY-NC-SA 4.0. See LICENSE.txt for more information.
 
 ## :pray: Acknowledgements
 
+This work is a result of the joint research project STADT:up. The project is supported by the German Federal Ministry
+for Economic Affairs and Climate Action (BMWK), based on a decision of the German Bundestag. The author is solely
+responsible for the content of this publication.
+
+Special thanks to [Vincentqyw](https://github.com/Vincentqyw) for developing
+the [Image Matching WebUI](https://github.com/Vincentqyw/image-matching-webui). This tool provides a user-friendly
+interface for matching between images using various state-of-the-art algorithms.
+
 Big thanks to the German government for making geospatial data freely available to everyone. These open data portals are
 a goldmine for developers, researchers, and anyone curious about spatial information. Here's where you can find them:
 
@@ -327,6 +342,3 @@ a goldmine for developers, researchers, and anyone curious about spatial informa
 - **North Rhine-Westphalia**: [opengeodata.nrw.de](https://www.opengeodata.nrw.de/)
 - **Baden-Württemberg**: [opengeodata.lgl-bw.de](https://opengeodata.lgl-bw.de/)
 
-Special thanks to [Vincentqyw](https://github.com/Vincentqyw) for developing
-the [Image Matching WebUI](https://github.com/Vincentqyw/image-matching-webui). This tool provides a user-friendly
-interface for matching between images using various state-of-the-art algorithms.
