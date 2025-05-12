@@ -316,7 +316,7 @@ visualize-dataset --dataset_dir assets/demo/samples/ --n_scenes 5 --show
 
 ## :warning: License
 
-Distributed under CC BY-NC-SA 4.0. See LICENSE.txt for more information.
+Distributed under CC BY-NC-SA 4.0. See LICENSE.md for more information.
 
 <a name="Acknowledgements"></a>
 
