@@ -20,7 +20,7 @@
 </div>
 
 <div align="center">
-  <img src="ortholoc/assets/overview.png" alt="overview" />
+  <img src="ortholoc/assets/overview.png" alt="Overview" />
 </div>
 
 <p>
@@ -82,7 +82,7 @@ imagery using orthophotos and digital surface models.
 ## :bar_chart: Dataset Samples
 
 <div align="center"> 
-  <img src="ortholoc/assets/demo/samples_viz.jpg" alt="Dataset Samples" />
+  <img src="ortholoc/assets/samples_viz.png" alt="Dataset Samples" />
 </div>
 
 <a name="Getting-Started"></a>
@@ -191,7 +191,7 @@ The naming of the files follows the pattern: `L{location_id}_{type_of_the_sample
 ### Sample
 
 <div align="center"> 
-  <img src="ortholoc/assets/sample_viz.png" alt="Dataset Samples" />
+  <img src="ortholoc/assets/sample_viz.png" alt="Dataset Sample" />
 </div>
 
 Each .npz file contains the following
