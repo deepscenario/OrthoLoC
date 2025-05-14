@@ -82,7 +82,7 @@ imagery using orthophotos and digital surface models.
 ## :bar_chart: Dataset Samples
 
 <div align="center"> 
-  <img src="ortholoc/assets/samples_viz.png" alt="Dataset Samples" />
+  <img src="ortholoc/assets/samples_viz.jpg" alt="Dataset Samples" />
 </div>
 
 <a name="Getting-Started"></a>
