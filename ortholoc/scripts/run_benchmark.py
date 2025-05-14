@@ -10,7 +10,7 @@ from ortholoc import utils
 
 
 def run_benchmark(dataset_dir: str, matcher_name: str, output_dir: str, pnp_mode: str, num_points: int | None,
-                  min_conf: float, limit_size: float, device: str, angles: list[int] | None = None,
+                  min_conf: float, device: str, limit_size: float | None = None, angles: list[int] | None = None,
                   use_intrinsics: bool = True, mode: int = 0, use_adhop: bool = False,
                   use_refined_extrinsics: bool = False, focal_length_init_from_gt: float | None = None,
                   scale_query_image: float = 1., scale_dop_dsm: float = 1., reprojection_error: float = 5,
@@ -43,7 +43,7 @@ def run_benchmark(dataset_dir: str, matcher_name: str, output_dir: str, pnp_mode
 def parse_args():
     argparser = argparse.ArgumentParser(description='Run Benchmark')
     argparser.add_argument('--dataset_dir', type=str, help='Dataset directory containing .npz files. If not defined, '
-                            'the dataset will be downloaded from the OrthoLoC website')
+                                                           'the dataset will be downloaded from the OrthoLoC website')
     argparser.add_argument('--matcher', type=str, help='Matcher name', required=True,
                            choices=['GT'] + list(MATCHER_ZOO.keys()), dest='matcher_name')
     argparser.add_argument('--output_dir', type=str, help='Output directory', required=True)
@@ -60,38 +60,40 @@ def parse_args():
     argparser.add_argument('--reprojection_error', type=float, help='RANSAC reprojection error', default=5.0)
     argparser.add_argument(
         '--num_points', type=int, help='Maximum number of point to consider in PnP. '
-        'If not defined, all points will be used')
+                                       'If not defined, all points will be used')
     argparser.add_argument('--use_adhop', action='store_true', help='Use Homography Preconditioning to '
-                           'improve matching performance')
+                                                                    'improve matching performance')
     argparser.add_argument('--scale_query_image', type=float, help='Scale of query image, between 0 '
-                           '(exclusive) and 1 (full resolution)', default=1.0)
+                                                                   '(exclusive) and 1 (full resolution)', default=1.0)
     argparser.add_argument('--scale_dop_dsm', type=float, help='Scale of DOP and DSM, between 0 '
-                           '(exclusive) and 1 (full resolution)', default=1.0)
+                                                               '(exclusive) and 1 (full resolution)', default=1.0)
     argparser.add_argument(
         '--covisibility_ratio', type=float, help='Covisibility ratio between query '
-        'image and the geodata. Default: 1 '
-        '(maximum possible ratio)', default=1.0)
+                                                 'image and the geodata. Default: 1 '
+                                                 '(maximum possible ratio)', default=1.0)
     argparser.add_argument(
         '--angles', nargs='+', type=int, help='This rotates the query image before '
-        'matching and take the best rotation results as the '
-        'final correspondences. If not defined, default '
-        'rotation values will be considered depending on '
-        'the matcher used.')
+                                              'matching and take the best rotation results as the '
+                                              'final correspondences. If not defined, default '
+                                              'rotation values will be considered depending on '
+                                              'the matcher used.')
     argparser.add_argument(
         '--min_conf', type=float, help='Minimum correspondences confidences will be '
-        'used to filter matchings below this value. Default= 0.5', default=0.5)
+                                       'used to filter matchings below this value. Default= 0.5', default=0.5)
     argparser.add_argument(
         '--limit_size', type=float, help='Limit size of the dataset. Default= 1.0 '
-        '(no limit). If integer provided e.g. 5, only 5 samples '
-        'will be picked. If between 0 and 1, a ratio of the full '
-        'dataset will be considered.', default=1.0)
+                                         '(no limit). If integer provided e.g. 5, only 5 samples '
+                                         'will be picked. If between 0 and 1, a ratio of the full '
+                                         'dataset will be considered.')
     argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
                            choices=['cuda', 'cpu'])
     return argparser.parse_args()
 
+
 def main():
     args = parse_args()
     run_benchmark(**vars(args))
+
 
 if __name__ == '__main__':
     main()

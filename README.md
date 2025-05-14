@@ -115,7 +115,7 @@ Clone the project
 git clone https://github.com/deepscenario/OrthoLoC.git
 ```
 
-Install the dependencies
+Install the library
 
 ```
 cd OrthoLoC

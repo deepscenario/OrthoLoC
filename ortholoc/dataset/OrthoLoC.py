@@ -19,7 +19,8 @@ from ortholoc.correspondences import Correspondences2D2D
 
 class OrthoLoC(Dataset):
 
-    def __init__(self, dataset_dir: str | None = None, sample_paths: list[str] | None = None, seed=47, start: float = 0.,
+    def __init__(self, dataset_dir: str | None = None, sample_paths: list[str] | None = None, seed=47,
+                 start: float = 0.,
                  end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0, set_name: str = 'all',
                  new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
                  scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
@@ -40,7 +41,7 @@ class OrthoLoC(Dataset):
             scale_dop_dsm: scale factor for the DOP and DSM images
             gt_matching_confidences_decay: decay factor for the matching confidences
             covisibility_ratio: ratio of the covisible area to keep
-            set_name: all, train, val, test_inPlace, test_outPlace in case no specific sample_paths or dataset path is provided
+            set_name: all, train, val, test_inPlace, test_outPlace in case no specific sample_paths or root dirpath of the dataset is provided
             return_tensor: return the images as tensors
             mode: mode for loading the samples
                 0: all samples
