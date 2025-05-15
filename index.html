@@ -453,33 +453,32 @@
                 <h2 class="title is-3">Abstract</h2>
                 <div class="content has-text-justified">
                     <p>
+
                         Accurate visual localization from aerial views is a fundamental problem with applications in
                         mapping, large-area inspection, and search-and-rescue operations. In many scenarios, these
-                        systems
-                        require high-precision localization while operating with limited resources (no internet
-                        connection
-                        or GNSS/GPS support), making large image databases or heavy 3D models impractical. Surprisingly,
-                        little attention has been devoted to leveraging orthographic geodata as an alternative paradigm,
-                        which is <b>lightweight</b> and <b>increasingly available</b> through free releases by
-                        governmental
-                        authorities (e.g., European Union).
+                        systems require high-precision localization while operating with limited resources (e.g., no
+                        internet connection or GNSS/GPS support), making large image databases or heavy 3D models
+                        impractical. Surprisingly, little attention has been given to leveraging orthographic geodata as
+                        an alternative paradigm, which is <b>lightweight</b> and <b>increasingly available</b> through
+                        free releases
+                        by governmental authorities (e.g., the European Union).
                     </p>
                     <p>
-                        To fill this gap, we propose <span class="method">OrthoLoC</span>, a <b>dataset</b> of 16,425
-                        UAV
-                        images from Germany and the US that addresses domain shifts between UAV imagery and geodata.
-                        <span class="method">OrthoLoC</span> is the
-                        <b>first</b> dataset that <b>pairs</b> UAV images with orthographic reference data, enabling new
-                        localization approaches and benchmarking of existing solutions. Our dataset lets us analyze the
-                        contribution of different components by decoupling image retrieval from geometric matching,
-                        providing insights on <b>isolated</b> localization and calibration performance. Through
-                        comprehensive evaluation, we examine the impact of <b>data resolutions</b>, <b>covisibility
-                        ratios</b>, and <b>domain shifts</b> on localization accuracy.
-                        Finally, we introduce a <b>refinement technique</b> called <span class="method">AdHoP</span>
-                        that can be integrated with any backbone method, improving matching by up to 95% and reducing
-                        translation error by 63%.
+                        To fill this gap, we propose <span class="method">OrthoLoC</span>,
+                        the <b>first large-scale dataset</b> comprising 16,425 UAV images from Germany and the United
+                        States
+                        with multiple modalities. The dataset addresses domain shifts between UAV imagery and geospatial
+                        data. Its paired structure enables fair benchmarking of existing solutions by decoupling image
+                        retrieval from feature matching, allowing <b>isolated</b> evaluation of localization and
+                        calibration
+                        performance. Through comprehensive evaluation, we examine the impact of <b>domain shifts</b>,
+                        <b>data
+                            resolutions</b>, and <b>covisibility</b> on localization accuracy. Finally, we introduce a
+                        <b>refinement
+                            technique</b> called <span class="method">AdHoP</span>, which can be integrated with any
+                        feature matcher, improving matching by
+                        up to 95% and reducing translation error by up to 63%.
                     </p>
-
                 </div>
             </div>
         </div>
@@ -746,7 +745,9 @@
         <h2 class="title">Acknowledgements</h2>
         <ul>
             <li>
-                This work is a result of the joint research project <a href="https://www.stadtup-online.de/" target="_blank">STADT:up</a>. The project is supported by the German
+                This work is a result of the joint research project <a href="https://www.stadtup-online.de/"
+                                                                       target="_blank">STADT:up</a>. The project is
+                supported by the German
                 Federal Ministry for Economic Affairs and Climate Action (BMWK), based on a decision of the German
                 Bundestag.
                 The author is solely responsible for the content of this publication.
