@@ -12,11 +12,9 @@ TEST*.xml
 Thumbs.db
 *checkpoints/
 *logs/
-*data/
 log.txt
 *.aux.xml
 *internal/
 .aux.xml
 __pycache__/
 *outputs/
-/ortholoc/dataset/internal/
