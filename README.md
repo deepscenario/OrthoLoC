@@ -56,7 +56,7 @@ We propose a large-scale benchmark dataset for UAV visual localization, which in
 ## :star2: About the Project
 
 OrthoLoC is a framework for UAV camera localization and calibration using orthographic geodata. The project provides a
-large-scale benchmark dataset and implementation of algorithms for matching, localization, and calibration of UAV
+large-scale dataset and implementation of algorithms for matching, localization, and calibration of UAV
 imagery using orthophotos and digital surface models.
 
 <a name="Dataset-Features"></a>
