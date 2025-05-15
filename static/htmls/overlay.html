@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Transparency Adjuster</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        .slider-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .slider-label {
+            font-size: 20px;
+            color: #333;
+        }
+
+        input[type="range"] {
+            width: 90vw;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 5px;
+            height: 8px;
+            outline: none;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb,
+        input[type="range"]::-moz-range-thumb,
+        input[type="range"]::-ms-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4a90e2;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<canvas id="imageCanvas"></canvas>
+<div class="slider-container">
+    <input type="range" id="alphaSlider" min="0" max="100" value="50">
+</div>
+<script>
+    const canvas = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+    const slider = document.getElementById('alphaSlider');
+
+    const image1 = new Image();
+    const image2 = new Image();
+
+    // Function to get query parameters from the URL
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            url1: params.get('url1'),
+            url2: params.get('url2'),
+        };
+    }
+
+    const {url1, url2} = getQueryParams();
+
+    // Set image sources based on query parameters (handles relative paths automatically)
+    if (url1) image1.src = url1;
+    if (url2) image2.src = url2;
+
+    let zoom = 1;
+    let isDragging = false;
+    let startX, startY;
+    let panX = 0, panY = 0;
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        drawImagesWithAlpha(slider.value / 100);
+    }
+
+    function drawImagesWithAlpha(alpha) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const scaledWidth = canvas.width * zoom;
+        const scaledHeight = canvas.height * zoom;
+        const xOffset = (canvas.width - scaledWidth) / 2 + panX;
+        const yOffset = (canvas.height - scaledHeight) / 2 + panY;
+
+        if (image1.complete) {
+            ctx.drawImage(image1, xOffset, yOffset, scaledWidth, scaledHeight);
+        }
+        ctx.globalAlpha = alpha;
+        if (image2.complete) {
+            ctx.drawImage(image2, xOffset, yOffset, scaledWidth, scaledHeight);
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    slider.addEventListener('input', (event) => {
+        const alphaValue = event.target.value / 100;
+        drawImagesWithAlpha(alphaValue);
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            panX = e.clientX - startX;
+            panY = e.clientY - startY;
+            drawImagesWithAlpha(slider.value / 100);
+        }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        isDragging = false;
+    });
+
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = Math.sign(e.deltaY) * -0.1;
+        zoom = Math.min(Math.max(0.1, zoom + delta), 10);
+        drawImagesWithAlpha(slider.value / 100);
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+
+    image1.onload = () => resizeCanvas();
+    image2.onload = () => resizeCanvas();
+</script>
+
+</body>
+</html>
+
+
+

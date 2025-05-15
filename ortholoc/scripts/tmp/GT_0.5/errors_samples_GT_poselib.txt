@@ -1,1 +1,0 @@
-L09_R0033 - 0 (best) - very_low - pos_error=0.021 pos_error=0.008 matching_error=0.000 reprojection_error=0.263 f_error=0.000 c_error=0.000

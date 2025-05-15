@@ -15,7 +15,8 @@ Thumbs.db
 *data/
 log.txt
 *.aux.xml
-internal/
+*internal/
 .aux.xml
 __pycache__/
 *outputs/
+/ortholoc/dataset/internal/
