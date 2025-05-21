@@ -11,18 +11,16 @@ authors = [
 ]
 requires-python = ">=3.10"
 readme = "README.md"
-license = {text = "CC BY-NC-SA 4.0"}
+license = { text = "CC BY-NC-SA 4.0" }
 dependencies = [
   "roma",
   "loguru",
   "imcui",
-  "torch",
   "rasterio",
   "py-cpuinfo",
   "gputil",
   "psutil",
   "opencv-python-headless",
-  "torchvision",
   "tueplots",
   "packaging",
   "beautifulsoup4",
@@ -31,12 +29,8 @@ dependencies = [
 
 [project.optional-dependencies]
 gpu = [
-  "torch==2.0.0+cu118",
-  "torchvision==0.15.0+cu118"
-]
-cpu = [
-  "torch==2.0.0+cpu",
-  "torchvision==0.15.0+cpu"
+  "torch==2.4.0+cu118",
+  "torchvision==0.19.0+cu118"
 ]
 
 [project.scripts]
@@ -53,4 +47,4 @@ include = [
 
 [project.urls]
 Homepage = "https://deepscenario.github.io/OrthoLoC"
-Bug_Tracker = "https://github.com/deepscanrio/OrthoLoC/issues"
+Bug_Tracker = "https://github.com/deepscenario/OrthoLoC/issues"

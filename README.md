@@ -98,7 +98,7 @@ imagery using orthophotos and digital surface models.
 You can create a virtual environment using conda or venv:
 
 ```
-conda create -n ortholoc python=3.10
+conda create -n ortholoc python=3.10 -y
 conda activate ortholoc
 ```
 or
@@ -118,11 +118,11 @@ To install the package, you can use pip to install it directly from GitHub (this
 
 To support GPU, use the following command:
 ```
-pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]"
-```
+pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
+````
 or to use CPU, use the following command:
 ```
-pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[cpu]"
+pip install git+https://github.com/deepscenario/OrthoLoC.git
 ```
 
 #### via git clone
@@ -137,7 +137,12 @@ Install the library
 
 ```
 cd OrthoLoC
-pip install -e ".[gpu]"   # or pip install -e ".[cpu]"
+pip install -e ".[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
+```
+for CPU only use: 
+```
+cd OrthoLoC
+pip install -e .
 ```
 
 <a name="Download-the-Dataset"></a>
