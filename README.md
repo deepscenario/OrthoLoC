@@ -293,8 +293,25 @@ run-matching --sample assets/demo/samples/urban_residential_xDOPDSM.npz --matche
 To run the localization and/or calibration from a sample of the dataset or from custom data, you can do the following:
 
 ```
-run-localization --sample assets/demo/samples/highway_rural.npz --matcher Mast3R --device cuda --angles 0 --show 
+run-localization --sample assets/demo/samples/urban_residential_xDOPDSM.npz --matcher Mast3R --device cuda --angles 0 --show 
 ```
+
+will output the following results:
+
+```
+Pose (world to cam):
+[[ 1.0548955e-01 -9.9438059e-01  8.8982619e-03 -1.0469512e+01]
+ [-9.0781039e-01 -9.9950403e-02 -4.0729618e-01 -2.2552296e+01]
+ [ 4.0589681e-01  3.4887560e-02 -9.1325277e-01  1.0123373e+02]]
+Intrinsics:
+[[772.4036    0.      516.1471 ]
+ [  0.      772.4036  385.53125]
+ [  0.        0.        1.     ]]
+```
+
+<div align="center">
+  <img src="ortholoc/assets/results.jpg" alt="Results" />
+</div>
 
 You can use your own images and geodata by specifying the paths to the files directly:
 
