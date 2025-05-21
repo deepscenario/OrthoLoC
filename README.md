@@ -337,6 +337,7 @@ To benchmark performance across a set of samples from the dataset or custom data
 ```
 run-benchmark --dataset_dir assets/demo/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
 ```
+Please consult `run-benchmark -h` to run a specific benchmark by configuring the parameters.
 
 <a name="Visualization-of-a-Sample"></a>
 
