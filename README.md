@@ -137,12 +137,13 @@ Install the library
 
 ```
 cd OrthoLoC
-pip install -e ".[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
+pip install -e .
 ```
-for CPU only use: 
+
+To fore supporting GPU, use the following command:
 ```
 cd OrthoLoC
-pip install -e .
+pip install -e ".[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
 ```
 
 <a name="Download-the-Dataset"></a>
