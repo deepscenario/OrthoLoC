@@ -8,7 +8,6 @@ import psutil
 from loguru import logger
 
 
-
 def get_git_commit_id() -> str | None:
     """
     Get the current git commit ID.

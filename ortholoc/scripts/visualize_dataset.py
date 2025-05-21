@@ -81,8 +81,9 @@ def visualize_samples(
 
 def parse_args():
     argparser = argparse.ArgumentParser(description='Visualize samples from the dataset')
-    argparser.add_argument('--dataset_dir', type=str, help='Dataset directory containing .npz files, if not defined, '
-                                'the dataset will be downloaded from the OrthoLoC website')
+    argparser.add_argument(
+        '--dataset_dir', type=str, help='Dataset directory containing .npz files, if not defined, '
+        'the dataset will be downloaded from the OrthoLoC website')
     argparser.add_argument('--n_scenes', type=int, help='Number of scenes to visualize', default=5)
     argparser.add_argument('--sample_ids', nargs='+', help='Specific Sample IDs to visualize')
     argparser.add_argument('--show', action='store_true', help='Show the plot')
@@ -95,6 +96,7 @@ def parse_args():
 def main():
     args = parse_args()
     visualize_samples(**vars(args))
+
 
 if __name__ == '__main__':
     main()

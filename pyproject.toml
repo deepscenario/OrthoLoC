@@ -29,6 +29,12 @@ dependencies = [
   "appdirs"
 ]
 
+[project.optional-dependencies]
+gpu = [
+  "torch==2.0.0+cu118",
+  "torchvision==0.15.0+cu118"
+]
+
 [project.scripts]
 run-benchmark = "ortholoc.scripts.run_benchmark:main"
 run-localization = "ortholoc.scripts.run_localization:main"

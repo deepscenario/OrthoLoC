@@ -43,8 +43,8 @@ class Matcher:
         if pts1.ndim == 1:
             pts1 = pts1[np.newaxis]
         confidences = confidences if confidences is not None else np.ones(len(pts0))
-        correspondences_2d2d = Correspondences2D2D(pts0=pts0, pts1=pts1, confidences=np.squeeze(confidences),
-                                                   is_normalized=False)
+        confidences = np.squeeze(confidences) if len(confidences) != 1 else confidences
+        correspondences_2d2d = Correspondences2D2D(pts0=pts0, pts1=pts1, confidences=confidences, is_normalized=False)
         correspondences_2d2d = correspondences_2d2d.normalized(w0=w0, h0=h0, w1=w1, h1=h1)
         correspondences_2d2d = correspondences_2d2d.take_finite()
         # keep covisible points only

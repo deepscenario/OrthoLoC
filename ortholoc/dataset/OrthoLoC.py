@@ -18,14 +18,12 @@ from ortholoc.correspondences import Correspondences2D2D
 
 
 class OrthoLoC(Dataset):
-
     def __init__(self, dataset_dir: str | None = None, sample_paths: list[str] | None = None, seed=47,
-                 start: float = 0.,
-                 end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0, set_name: str = 'all',
-                 new_size: tuple[int, int] | None = None, limit_size: float | None = None, shuffle: bool = True,
-                 scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0, gt_matching_confidences_decay: float = 1.0,
-                 covisibility_ratio: float = 1.0, return_tensor: bool = True,
-                 predownload: bool = False) -> None:
+                 start: float = 0., end: float = 1., use_refined_extrinsics: bool = False, mode: int = 0,
+                 set_name: str = 'all', new_size: tuple[int, int] | None = None, limit_size: float | None = None,
+                 shuffle: bool = True, scale_query_image: float = 1.0, scale_dop_dsm: float = 1.0,
+                 gt_matching_confidences_decay: float = 1.0, covisibility_ratio: float = 1.0,
+                 return_tensor: bool = True, predownload: bool = False) -> None:
         """
         Args:
             dataset_dir: path to the directory containing the samples
@@ -71,8 +69,13 @@ class OrthoLoC(Dataset):
         if dataset_dir is not None:
             sample_paths = []
             if dataset_dir.startswith('http'):
-                for setname in ('train', 'val', 'test_inPlace', 'test_outPlace') if set_name == 'all' else (set_name,):
-                    sample_paths += utils.io.get_file_links(os.path.join(dataset_dir, setname), pattern=rf"^.*\.npz$")
+                set_names = ('train', 'val', 'test_inPlace', 'test_outPlace')
+                if any(set_name in dataset_dir for set_name in set_names):
+                    sample_paths += utils.io.get_file_links(dataset_dir, pattern=rf"^.*\.npz$")
+                else:
+                    for setname in set_names if set_name == 'all' else (set_name, ):
+                        sample_paths += utils.io.get_file_links(os.path.join(dataset_dir, setname),
+                                                                pattern=rf"^.*\.npz$")
             else:
                 dataset_dir_assets = utils.io.resolve_asset_path(dataset_dir, verbose=False)
                 dataset_dir = dataset_dir_assets or dataset_dir
@@ -195,10 +198,10 @@ class OrthoLoC(Dataset):
 
     @staticmethod
     def get_correspondences_2d2d(
-            sample: dict,
-            normalized: bool = False,
-            covisible_only=False,
-            sampling_pts2d: np.ndarray | None = None,
+        sample: dict,
+        normalized: bool = False,
+        covisible_only=False,
+        sampling_pts2d: np.ndarray | None = None,
     ) -> Correspondences2D2D:
         """
         Compute the GT 2D-2D correspondences between the query and DOP images.

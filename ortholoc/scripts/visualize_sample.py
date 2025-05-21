@@ -41,5 +41,6 @@ def main():
     args = parse_args()
     visualize_sample(**vars(args))
 
+
 if __name__ == '__main__':
     main()

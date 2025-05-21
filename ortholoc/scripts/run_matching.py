@@ -82,10 +82,10 @@ def parse_args():
         nargs='+',
         type=int,
         help='This rotates the query image before '
-             'matching and take the best rotation results as the '
-             'final correspondences. If not defined, default '
-             'rotation values will be considered depending on '
-             'the matcher used.',
+        'matching and take the best rotation results as the '
+        'final correspondences. If not defined, default '
+        'rotation values will be considered depending on '
+        'the matcher used.',
     )
     argparser.add_argument('--device', type=str, help='Device used to run the matchers', default='cuda',
                            choices=['cuda', 'cpu'])
@@ -93,7 +93,7 @@ def parse_args():
     argparser.add_argument('--use_adhop', action='store_true', help='Use Homography Preconditioning')
     argparser.add_argument(
         '--min_conf', type=float, help='Minimum correspondences confidences will be '
-                                       'used to filter matchings below this value. Default= 0.5', default=0.5)
+        'used to filter matchings below this value. Default= 0.5', default=0.5)
     argparser.add_argument('--plot_max_pts', type=int, help='Max number of matchings to visualize', dest='max_pts',
                            default=1000)
     argparser.add_argument('--output_path', type=str, required=False, help='Output path to save the plot')

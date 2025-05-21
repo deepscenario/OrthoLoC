@@ -19,6 +19,7 @@ from appdirs import user_cache_dir
 DATASET_URL = 'https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/'
 CACHE_DIR = os.environ.get('ORTHOLOC_CACHE_DIR', user_cache_dir('ortholoc'))
 
+
 def list_dir(dir_path: str) -> tuple[list[str], list[str]]:
     """
     List all files and folders in a directory.
@@ -118,6 +119,7 @@ def load_image(path: str, grayscale: bool = False) -> np.ndarray:
     if image is None:
         raise ValueError(f"Could not load image from {path}")
     return image
+
 
 def load_npz(path: str) -> dict:
     """
@@ -252,7 +254,7 @@ def load_json(path: str) -> dict:
     return data
 
 
-def save_fig(fig: plt.Figure, path: str, dpi: int = 100,  bbox_inches='tight', *args, **kwargs) -> None:
+def save_fig(fig: plt.Figure, path: str, dpi: int = 100, bbox_inches='tight', *args, **kwargs) -> None:
     """
     Save a matplotlib figure to a file.
 
@@ -262,8 +264,7 @@ def save_fig(fig: plt.Figure, path: str, dpi: int = 100,  bbox_inches='tight', *
         dpi: Resolution of the saved figure.
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    plt.tight_layout()
-    fig.savefig(path, dpi=dpi, *args, **kwargs)
+    fig.savefig(path, dpi=dpi, bbox_inches=bbox_inches, *args, **kwargs)
     plt.close()
 
 
@@ -301,14 +302,13 @@ def load_camera_params(path: str) -> tuple[np.ndarray | None, np.ndarray | None]
     return pose_w2c, intrinsics
 
 
-
 def resolve_path(input_path: str | Path, verbose: bool = True) -> str | None:
     local_path = None
     if input_path.startswith("http"):
         rel_dir = input_path.removeprefix(DATASET_URL).removeprefix("/")
         local_path = os.path.join(CACHE_DIR, rel_dir)
         if os.path.splitext(input_path)[1] == "":
-            local_path = download_files(input_path, local_path, pattern = r"^.*\.npz$", verbose = verbose)
+            local_path = download_files(input_path, local_path, pattern=r"^.*\.npz$", verbose=verbose)
         else:
             local_path = download_file(input_path, local_path)
     if local_path is None:
@@ -360,7 +360,7 @@ def resolve_asset_path(input_path: str | Path, verbose: bool = True) -> Path | N
     return None
 
 
-def download_file(url: str, save_path: str, verbose = True) -> str | None:
+def download_file(url: str, save_path: str, verbose=True) -> str | None:
     """
     Downloads a file from a given URL and saves it to the specified path.
 
@@ -406,11 +406,7 @@ def get_file_links(url: str, pattern: str | None = None) -> list[str]:
     if pattern is not None:
         regex = re.compile(pattern)
 
-        return [
-            f"{url.rstrip('/')}/{href}"
-            for href in links
-            if regex.match(href)
-        ]
+        return [f"{url.rstrip('/')}/{href}" for href in links if regex.match(href)]
     else:
         return links
 
@@ -437,7 +433,7 @@ def download_files(url: str, save_directory: str, pattern: str, verbose: bool = 
         save_path = os.path.join(save_directory, file_name)
         if os.path.exists(save_path):
             continue
-        output_path = download_file(file_url, save_path, verbose = verbose)
+        output_path = download_file(file_url, save_path, verbose=verbose)
         if output_path is None:
             logger.warning(f"Failed to download: {file_url}")
         pbar.set_postfix_str(f"Downloaded: {file_name}")

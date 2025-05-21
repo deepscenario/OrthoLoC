@@ -95,6 +95,19 @@ imagery using orthophotos and digital surface models.
 
 - Python 3.10
 
+You can create a virtual environment using conda or venv:
+
+```
+conda create -n ortholoc python=3.10
+conda activate ortholoc
+```
+or
+
+```
+python3 -m venv ortholoc
+source ortholoc/bin/activate
+```
+
 <a name="Installation"></a>
 
 ### :gear: Installation
@@ -249,6 +262,10 @@ dataset = OrthoLoC(
 For each script, consult the help message for more options.
 All the weights for matching algorithms will be downloaded automatically.
 
+#### Important Notes:
+
+- Use `--device cpu` AND set the environment variable `CUDA_VISIBLE_DEVICES=''` if you want to run the scripts on CPU.
+
 <a name="Matching-Only"></a>
 
 ### :repeat: Matching Only
@@ -277,6 +294,7 @@ run-localization --image assets/demo/urban_residential.jpg --dop assets/demo/urb
 
 **Important notes:**
 
+- You can add --adhop to enable AdHoP refinement.
 - If you do not provide intrinsics parameters, the system will automatically estimate them (performing calibration).
 - Ensure your geodata covers the area visible in the query image. The localization and calibration framework requires
   sufficient overlap between the query image and geodata. Using geodata with large areas not visible in the query image
@@ -301,6 +319,10 @@ To visualize a single sample from the dataset:
 ```
 visualize-sample --sample assets/demo/samples/highway_rural.npz --show
 ```
+or 
+```
+visualize-sample --sample https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/L01_R0056.npz --show
+```
 
 <a name="Visualization-of-Dataset-Samples"></a>
 
@@ -309,7 +331,11 @@ visualize-sample --sample assets/demo/samples/highway_rural.npz --show
 To create a visualization of some samples in a dataset directory:
 
 ```
-visualize-dataset --dataset_dir assets/demo/samples/ --n_scenes 5 --show
+visualize-dataset --dataset_dir full/test_outPlace/ --n_scenes 2 --show
+```
+or
+```
+visualize-dataset --sample_ids L17_R0066 L09_R0396 L32_R0008 --show
 ```
 
 <a name="License"></a>

@@ -135,7 +135,7 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
 
                 if success_refined:
                     title += (f'AdHoP chould have been improved results, since '
-                              f'{opt_reproj_error:.2f}px > {opt_reproj_error_refined:.2f}px ')
+                              f'{opt_reproj_error:.2f}px > {opt_reproj_error_refined:.2f}px \n')
                     if transl_error is not None and transl_error_refined is not None:
                         title += f'TE: from {transl_error:.2f}m to {transl_error_refined:.2f}m, '
                     if angular_error is not None and angular_error_refined is not None:
@@ -146,8 +146,9 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                     if output_dir is not None or show:
 
                         # plot matches
-                        fig_matches, _ = correspondences_2d2d.plot(image_query, image_dop, max_pts=plot_max_pts,
-                                                                   title=title, fig_scale=1.0, show=show)
+                        fig_matches, _ = correspondences_2d2d.plot(
+                            image_query, image_dop, max_pts=plot_max_pts,
+                            title='[Before AdHoP] Matching Correspondences - ' + title, fig_scale=1.0, show=show)
                         if output_dir:
                             utils.io.save_fig(
                                 fig_matches,
@@ -161,16 +162,20 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                                 utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0,
                                                             w=w0), image_query, show_colorbar=True, alpha=0.5, s=1,
                                 heatmap=dataset.compute_matching_error(sample, correspondences_2d2d),
+                                title='[Before AdHoP] Matching Errors - ' + title,
                                 metrics={'ME': (matching_error, 'px')}, show=True, colorbar_label='ME (px)')
-                            utils.io.save_fig(
-                                fig_matching_errors,
-                                os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors_init' + fig_ext))
+
+                            if output_dir is not None:
+                                utils.io.save_fig(
+                                    fig_matching_errors,
+                                    os.path.join(output_dir,
+                                                 f'{sample_id}_{matcher_name}_matching_errors_init' + fig_ext))
 
                             # reprojection plot
                             fig_reproj, _ = utils.plot.plot_reprojections(
                                 image_query, pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred,
-                                pose_c2w_gt=pose_c2w_gt, intrinsics_matrix_pred=intrinsics_matrix_pred, title=title,
-                                metrics={
+                                pose_c2w_gt=pose_c2w_gt, intrinsics_matrix_pred=intrinsics_matrix_pred,
+                                title='[Before AdHoP] Reprojections - ' + title, metrics={
                                     'ME': (matching_error, 'px'),
                                     'TE': (transl_error, 'm'),
                                     'RE': (angular_error, '°')
@@ -191,7 +196,7 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
                 elif transl_error_refined is not None:
                     logger.info(f'AdHoP most likely did not improve the results. Results will be ignored')
                     title += (f'AdHoP most likely did not improve the results, since '
-                              f'{opt_reproj_error:.2f}px < {opt_reproj_error_refined:.2f}px ')
+                              f'{opt_reproj_error:.2f}px < {opt_reproj_error_refined:.2f}px \n')
                     if transl_error is not None and transl_error_refined is not None:
                         title += f'TE: from {transl_error:.2f}m to {transl_error_refined:.2f}m, '
                     if angular_error is not None and angular_error_refined is not None:
@@ -227,7 +232,8 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
 
             # plot results
             if output_dir is not None or show:
-                fig_matches, _ = correspondences_2d2d.plot(image_query, image_dop, max_pts=plot_max_pts, title=title,
+                fig_matches, _ = correspondences_2d2d.plot(image_query, image_dop, max_pts=plot_max_pts,
+                                                           title='[Final] Matching Correspondences - ' + title,
                                                            fig_scale=1.0, show=show)
                 if output_dir:
                     utils.io.save_fig(fig_matches,
@@ -238,18 +244,21 @@ def run_localization(matcher_name: str, img_path: str | None = None, dop_path: s
 
                     # matching errors plot
                     fig_matching_errors, _ = utils.plot.plot_pts2d(
-                        utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0, w=w0), image_query,
-                        show_colorbar=True, alpha=0.5, s=1, metrics={'ME': (matching_error, 'px')},
-                        title=title, heatmap=matching_errors, show=True, colorbar_label='ME (px)')
+                        utils.geometry.denorm_pts2d(correspondences_2d2d.pts0, h=h0,
+                                                    w=w0), image_query, show_colorbar=True, alpha=0.5, s=1,
+                        metrics={'ME': (matching_error, 'px')}, title='[Final] Matching Errors - ' + title,
+                        heatmap=matching_errors, show=True, colorbar_label='ME (px)')
 
                     if output_dir:
-                        utils.io.save_fig(fig_matching_errors,
-                                          os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
+                        utils.io.save_fig(
+                            fig_matching_errors,
+                            os.path.join(output_dir, f'{sample_id}_{matcher_name}_matching_errors' + fig_ext))
 
                     # reprojection plot
                     fig_reproj, _ = utils.plot.plot_reprojections(
                         image_query, pts3d=sample['keypoints'], pose_c2w_pred=pose_c2w_pred, pose_c2w_gt=pose_c2w_gt,
-                        intrinsics_matrix_pred=intrinsics_matrix_pred, title=title, metrics={
+                        intrinsics_matrix_pred=intrinsics_matrix_pred, title='[Final] Reprojections - ' + title,
+                        metrics={
                             'ME': (matching_error, 'px'),
                             'TE': (transl_error, 'm'),
                             'RE': (angular_error, '°')
@@ -338,6 +347,7 @@ def parse_args():
 def main():
     args = parse_args()
     run_localization(**vars(args))
+
 
 if __name__ == '__main__':
     main()
