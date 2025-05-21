@@ -116,8 +116,13 @@ source ortholoc/bin/activate
 
 To install the package, you can use pip to install it directly from GitHub (this might take a while):
 
+To support GPU, use the following command:
 ```
-pip install git+https://github.com/deepscenario/OrthoLoC.git
+pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]"
+```
+or to use CPU, use the following command:
+```
+pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[cpu]"
 ```
 
 #### via git clone
@@ -132,7 +137,7 @@ Install the library
 
 ```
 cd OrthoLoC
-pip install -e .
+pip install -e ".[gpu]"   # or pip install -e ".[cpu]"
 ```
 
 <a name="Download-the-Dataset"></a>

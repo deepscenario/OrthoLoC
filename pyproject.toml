@@ -34,6 +34,10 @@ gpu = [
   "torch==2.0.0+cu118",
   "torchvision==0.15.0+cu118"
 ]
+cpu = [
+  "torch==2.0.0+cpu",
+  "torchvision==0.15.0+cpu"
+]
 
 [project.scripts]
 run-benchmark = "ortholoc.scripts.run_benchmark:main"
