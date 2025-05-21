@@ -66,7 +66,8 @@ class OrthoLoC(Dataset):
         if dataset_dir is not None and set_name is not None and set_name != 'all':
             dataset_dir = os.path.join(dataset_dir, set_name)
 
-        if not dataset_dir.startswith('http') and utils.io.resolve_asset_path(dataset_dir, verbose=False) is None:
+        if dataset_dir is not None and not dataset_dir.startswith('http') and \
+                utils.io.resolve_asset_path(dataset_dir, verbose=False) is None:
             dataset_dir = os.path.join(utils.io.DATASET_URL, dataset_dir)
 
         if dataset_dir is not None:
