@@ -332,7 +332,7 @@ run-localization --image assets/demo/urban_residential.jpg --dop assets/demo/urb
 
 ### :straight_ruler: Benchmarking
 
-To benchmark performance across a set of samples from the dataset or custom data:
+To benchmark performance across a set of samples from the dataset:
 
 ```
 run-benchmark --dataset_dir assets/demo/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
