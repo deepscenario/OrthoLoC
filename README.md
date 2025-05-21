@@ -116,14 +116,14 @@ source ortholoc/bin/activate
 
 To install the package, you can use pip to install it directly from GitHub (this might take a while):
 
-To support GPU, use the following command:
-```
-pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
-````
-or to use CPU, use the following command:
 ```
 pip install git+https://github.com/deepscenario/OrthoLoC.git
 ```
+
+To force supporting GPU, use the following command:
+```
+pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
+````
 
 #### via git clone
 
