@@ -1,5 +1,4 @@
 <div align="center">
-  <br><br>
   <img src="ortholoc/assets/logo.png" alt="Logo" width="150"/>
   <h1>OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata</h1>
 
