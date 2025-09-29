@@ -49,24 +49,15 @@
   "description": "OrthoLoC is the first paired UAV localization dataset using lightweight orthographic geodata, comprising 16,425 images captured across Germany and the US, spanning 47 regions and 19 cities. The dataset introduces a new paradigm for aerial localization that leverages readily available digital orthophotos (DOPs) and digital surface models (DSMs) instead of resource-intensive 3D models or large image databases. This approach is particularly valuable given the increasing availability of regularly updated geodata from governmental authorities like the European Union. OrthoLoC captures diverse environments including urban, suburban, highways, and natural landscapes with varying perspectives and altitudes. To increase visual and structural variations that bridge the gap for real-world deployment, we leveraged open geodata and aligned it to photogrammetry reconstructions, creating three domain categories: same-domain (minimal differences), DOP cross-domain (visual variations only), and DOP-DSM cross-domain (both visual and geometric variations). Each sample provides multiple modalities: query UAV image, 3D point map, DOP, DSM, 3D mesh, 6DoF camera pose, intrinsic parameters, and representative 3D keypoints. The dataset's paired structure enables isolated evaluation of localization algorithms independent of retrieval performance, providing researchers with a systematic framework for benchmarking UAV localization approaches using orthographic reference data.",
   "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
   "conformsTo": "http://mlcommons.org/croissant/1.0",
-  "citeAs": "N/A until published",
+  "citeAs": "Dhaouadi, Oussema, et al. \"OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata.\" The Thirty-ninth Annual Conference on Neural Information Processing Systems Datasets and Benchmarks Track, 2025.",
   "url": "https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/",
   "distribution": [
-    {
-      "@type": "cr:FileObject",
-      "@id": "github-repository",
-      "name": "github-repository",
-      "description": "OrthoLoc repository on GitHub.",
-      "contentUrl": "https://github.com/openai/gpt-3",
-      "encodingFormat": "git+https",
-      "sha256": "main"
-    },
     {
       "@type": "cr:FileObject",
       "@id": "dataset-hosting",
       "name": "dataset-hosting",
       "description": "OrthoLoc dataset hosting.",
-      "contentUrl": "https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/",
+      "contentUrl": "https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/",
       "encodingFormat": "https",
       "sha256": "main"
     },
@@ -74,9 +65,9 @@
       "@type": "cr:FileSet",
       "@id": "train-files",
       "name": "train-files",
-      "description": "Train files are hosted on the GitHub repository.",
+      "description": "Train files.",
       "containedIn": {
-        "@id": "github-repository"
+        "@id": "dataset-hosting"
       },
       "encodingFormat": "application/numpy-array",
       "includes": "train/*.npz"
@@ -85,9 +76,9 @@
       "@type": "cr:FileSet",
       "@id": "val-files",
       "name": "val-files",
-      "description": "Val files are hosted on the GitHub repository.",
+      "description": "Val files.",
       "containedIn": {
-        "@id": "github-repository"
+        "@id": "dataset-hosting"
       },
       "encodingFormat": "application/numpy-array",
       "includes": "val/*.npz"
@@ -96,9 +87,9 @@
       "@type": "cr:FileSet",
       "@id": "test_inPlace-files",
       "name": "test_inPlace-files",
-      "description": "test_inPlace files are hosted on the GitHub repository.",
+      "description": "test_inPlace files.",
       "containedIn": {
-        "@id": "github-repository"
+        "@id": "dataset-hosting"
       },
       "encodingFormat": "application/numpy-array",
       "includes": "test_inPlace/*.npz"
@@ -107,9 +98,9 @@
       "@type": "cr:FileSet",
       "@id": "test_outPlace-files",
       "name": "test_outPlace-files",
-      "description": "test_outPlace files are hosted on the GitHub repository.",
+      "description": "test_outPlace files.",
       "containedIn": {
-        "@id": "github-repository"
+        "@id": "dataset-hosting"
       },
       "encodingFormat": "application/numpy-array",
       "includes": "test_outPlace/*.npz"
@@ -291,7 +282,7 @@
           "@type": "cr:Field",
           "@id": "train/extrinsics_refined",
           "name": "extrinsics_refined",
-          "description": "Camera pose parameters optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC.",
+          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
           "dataType": "cr:Float32",
           "source": {
             "fileSet": {
@@ -551,7 +542,7 @@
           "@type": "cr:Field",
           "@id": "val/extrinsics_refined",
           "name": "extrinsics_refined",
-          "description": "Camera pose parameters optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC.",
+          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
           "dataType": "cr:Float32",
           "source": {
             "fileSet": {
@@ -811,7 +802,7 @@
           "@type": "cr:Field",
           "@id": "test_inPlace/extrinsics_refined",
           "name": "extrinsics_refined",
-          "description": "Camera pose parameters optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC.",
+          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
           "dataType": "cr:Float32",
           "source": {
             "fileSet": {
@@ -1071,7 +1062,7 @@
           "@type": "cr:Field",
           "@id": "test_outPlace/extrinsics_refined",
           "name": "extrinsics_refined",
-          "description": "Camera pose parameters optimized to compensate for rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth correspondences between query images and DOP/DSM data via PnP RANSAC.",
+          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
           "dataType": "cr:Float32",
           "source": {
             "fileSet": {

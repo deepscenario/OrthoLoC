@@ -141,7 +141,7 @@ class Correspondences2D2D(Correspondences):
         """
         Filter correspondences by taking only those that are within the image bounds.
         """
-        if is_normalized is not None:
+        if is_normalized is None:
             is_normalized = self.is_normalized
         if not is_normalized:
             mask = np.ones(len(self.pts0), dtype=bool)

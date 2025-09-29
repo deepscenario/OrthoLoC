@@ -1,14 +1,15 @@
 <div align="center">
-
-  <h1>✈️🌍️: OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata</h1>
+  <br><br>
+  <img src="ortholoc/assets/logo.png" alt="Logo" width="150"/>
+  <h1>OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata</h1>
 
 <!-- Badges -->
 <p>
   <a href="https://deepscenario.github.io/OrthoLoC/">
     <img src="https://img.shields.io/badge/💻-Project Page-blue" alt="project_page" />
   </a>
-  <a href="">
-    <img src="https://img.shields.io/badge/📄-Paper (under review)-yellow" alt="paper" />
+  <a href="https://arxiv.org/abs/2509.18350">
+    <img src="https://img.shields.io/badge/📄-Paper-yellow" alt="paper" />
   </a>
   <a href="https://github.com/deepscenario/OrthoLoC/stargazers">
     <img src="https://img.shields.io/github/stars/deepscenario/OrthoLoC" alt="stars" />
@@ -101,6 +102,7 @@ You can create a virtual environment using conda or venv:
 conda create -n ortholoc python=3.10 -y
 conda activate ortholoc
 ```
+
 or
 
 ```
@@ -121,6 +123,7 @@ pip install git+https://github.com/deepscenario/OrthoLoC.git
 ```
 
 To force supporting GPU, use the following command:
+
 ```
 pip install "git+https://github.com/deepscenario/OrthoLoC.git#egg=ortholoc[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
 ````
@@ -141,6 +144,7 @@ pip install -e .
 ```
 
 To fore supporting GPU, use the following command:
+
 ```
 cd OrthoLoC
 pip install -e ".[gpu]" --extra-index-url https://download.pytorch.org/whl/cu118
@@ -195,6 +199,35 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
 │   │   ├──  ...
 │   ├── test_outPlace
 │   │   ├── L08_R0000.npz
+│   │   ├──  ...
+├── unpacked
+│   ├── train
+│   │   ├── DOPs
+│   │   │   ├── L01_R0000.tif
+│   │   │   ├──  ...
+│   │   ├── DSMs
+│   │   │   ├── L01_R0000.tif
+│   │   │   ├──  ...
+│   │   ├── cameras
+│   │   │   ├── L01_R0000.json
+│   │   │   ├──  ...
+│   │   ├── meshes
+│   │   │   ├── L01_R0000.ply
+│   │   │   ├──  ...
+│   │   ├── keypoints
+│   │   │   ├── L01_R0000.ply
+│   │   │   ├──  ...
+│   │   ├── point_maps
+│   │   │   ├── L01_R0000.ply
+│   │   │   ├──  ...
+│   │   ├── queries
+│   │   │   ├── L01_R0000.jpg
+│   │   │   ├──  ...
+│   ├── val # same structure as train
+│   │   ├──  ...
+│   ├── test_inPlace # same structure as train
+│   │   ├──  ...
+│   ├── test_outPlace # same structure as train
 │   │   ├──  ...
 ```
 
@@ -265,6 +298,9 @@ dataset = OrthoLoC(
     predownload=False,  # if True, it will download the dataset while constructing the dataset object, otherwise it will download while iterating over the dataset
 )
 ```
+
+You can also use the unpacked version of the dataset, where each data type is stored in a separate folder. This is useful if you are working with C++ or other languages that do not support `.npz` loading.
+Of course, you can still load `.npz` files in C++ using libraries such as [cnpy](https://github.com/rogersce/cnpy).
 
 <a name="Run-Scripts"></a>
 
@@ -337,6 +373,7 @@ To benchmark performance across a set of samples from the dataset:
 ```
 run-benchmark --dataset_dir assets/demo/samples/ --output_dir ./output/ --matcher Mast3R --device cuda
 ```
+
 Please run `run-benchmark -h` to see how to configure the parameters for running a specific benchmark.
 
 <a name="Visualization-of-a-Sample"></a>
@@ -348,7 +385,9 @@ To visualize a single sample from the dataset:
 ```
 visualize-sample --sample assets/demo/samples/highway_rural.npz --show
 ```
-or 
+
+or
+
 ```
 visualize-sample --sample https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/full/test_inPlace/L01_R0056.npz --show
 ```
@@ -362,7 +401,9 @@ To create a visualization of some samples in a dataset directory:
 ```
 visualize-dataset --dataset_dir full/test_outPlace/ --n_scenes 2 --show
 ```
+
 or
+
 ```
 visualize-dataset --sample_ids L17_R0066 L09_R0396 L32_R0008 --show
 ```
