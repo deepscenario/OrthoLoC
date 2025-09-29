@@ -438,3 +438,12 @@ a goldmine for developers, researchers, and anyone curious about spatial informa
 - **North Rhine-Westphalia**: [opengeodata.nrw.de](https://www.opengeodata.nrw.de/)
 - **Baden-Württemberg**: [opengeodata.lgl-bw.de](https://opengeodata.lgl-bw.de/)
 
+## Citation
+```bibtex
+@inproceedings{dhaouadi2025ortholoc,
+  title        = {OrthoLoC: {UAV} 6-DoF Localization and Calibration Using Orthographic Geodata},
+  author       = {Oussema Dhaouadi and Riccardo Marin and Johannes Michael Meier and Jacques Kaiser and Daniel Cremers},
+  booktitle    = {The Thirty-ninth Annual Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+  year         = {2025}
+}
+```
