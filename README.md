@@ -1,6 +1,7 @@
 <div align="center">
   <img src="ortholoc/assets/logo.png" alt="Logo" width="150"/>
   <h1>OrthoLoC: UAV 6-DoF Localization and Calibration Using Orthographic Geodata</h1>
+<h2>NeurIPS 2025 (Oral)</h2>
 
 <!-- Badges -->
 <p>
