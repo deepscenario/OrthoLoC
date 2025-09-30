@@ -15,7 +15,7 @@
     <img src="https://img.shields.io/github/stars/deepscenario/OrthoLoC" alt="stars" />
   </a>
   <a href="https://github.com/deepscenario/OrthoLoC/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/deepscenario/OrthoLoC.svg" alt="license" />
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" alt="license" />
   </a>
 </p>
 </div>
