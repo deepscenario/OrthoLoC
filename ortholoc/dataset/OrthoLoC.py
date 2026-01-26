@@ -83,8 +83,6 @@ class OrthoLoC(Dataset):
             else:
                 dataset_dir_assets = utils.io.resolve_asset_path(dataset_dir, verbose=False)
                 dataset_dir = dataset_dir_assets or dataset_dir
-                if set_name != 'all':
-                    dataset_dir = os.path.join(dataset_dir, set_name)
                 sample_paths = utils.io.find_files(dataset_dir, suffix='.npz', recursive=True)
             sample_paths = sorted(sample_paths)
 
