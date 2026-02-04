@@ -264,7 +264,7 @@ The naming of the files follows the pattern: `L{location_id}_{type_of_the_sample
 </div>
 
 Each .npz file contains the following
-keys: ['sample_id', 'image_query', 'point_map', 'image_dop', 'dsm', 'scale', 'extrinsics', 'intrinsics', 'keypoints', 'vertices', 'faces', 'extrinsics_refined']
+keys: ['sample_id', 'image_query', 'point_map', 'image_dop', 'dsm', 'scale', 'extrinsics', 'intrinsics', 'keypoints', 'vertices', 'faces']
 
 - **sample_id**: The ID of the sample as string
 - **image_query**: The query image as numpy array of shape (H, W, 3)
@@ -278,10 +278,6 @@ keys: ['sample_id', 'image_query', 'point_map', 'image_dop', 'dsm', 'scale', 'ex
 - **keypoints**: The 3D keypoints of the query image as numpy array of shape (N, 3)
 - **vertices**: The 3D vertices of the local mesh as numpy array of shape (M, 3)
 - **faces**: The faces of the local mesh as numpy array of shape (L, 3)
-- **extrinsics_refined**: Camera pose parameters as numpy array of shape (3, 4) optimized to compensate for
-  rasterization artifacts and missing 0.5D information (building facades) in the DSM. Computed using ground truth
-  correspondences between query images and DOP/DSM data via PnP RANSAC. Provided for research purposes but not used in
-  official benchmarking.
 
 <a name="Usage"></a>
 
