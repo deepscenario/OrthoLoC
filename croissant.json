@@ -280,21 +280,6 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "train/extrinsics_refined",
-          "name": "extrinsics_refined",
-          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
-          "dataType": "cr:Float32",
-          "source": {
-            "fileSet": {
-              "@id": "train-files"
-            },
-            "extract": {
-              "column": "extrinsics_refined"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
           "@id": "train/filename",
           "name": "filename",
           "description": "Filename of the NPZ file . The naming of the files follows the pattern: L{location_id}_{type_of_the_sample}{sample_index}.npz",
@@ -535,21 +520,6 @@
             },
             "extract": {
               "column": "faces"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "val/extrinsics_refined",
-          "name": "extrinsics_refined",
-          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
-          "dataType": "cr:Float32",
-          "source": {
-            "fileSet": {
-              "@id": "val-files"
-            },
-            "extract": {
-              "column": "extrinsics_refined"
             }
           }
         },
@@ -800,21 +770,6 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "test_inPlace/extrinsics_refined",
-          "name": "extrinsics_refined",
-          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
-          "dataType": "cr:Float32",
-          "source": {
-            "fileSet": {
-              "@id": "test_inPlace-files"
-            },
-            "extract": {
-              "column": "extrinsics_refined"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
           "@id": "test_inPlace/filename",
           "name": "filename",
           "description": "Filename of the NPZ file . The naming of the files follows the pattern: L{location_id}_{type_of_the_sample}{sample_index}.npz",
@@ -1055,21 +1010,6 @@
             },
             "extract": {
               "column": "faces"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "test_outPlace/extrinsics_refined",
-          "name": "extrinsics_refined",
-          "description": "Camera pose parameters by locally estimating the camera pose using RANSAC PnP based on ground truth correspondences between query images and DOP/DSM data.",
-          "dataType": "cr:Float32",
-          "source": {
-            "fileSet": {
-              "@id": "test_outPlace-files"
-            },
-            "extract": {
-              "column": "extrinsics_refined"
             }
           }
         },
