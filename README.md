@@ -30,10 +30,22 @@ This approach is particularly useful for UAVs operating in urban environments, w
 We propose a large-scale benchmark dataset for UAV visual localization, which includes a diverse set of images and geodata from various environments. This dataset serves as a valuable resource for researchers and practitioners in the field, enabling them to develop and evaluate new localization algorithms.
 </p>
 
+<a name="Updates"></a>
+
+## :update: Updates
+
+- [x] **Source Code:** Releasing the official implementation of OrthoLoC.
+- [x] **Dataset Upload:** The full dataset is now available on [TUM servers](https://cvg.cit.tum.de/webshare/g/papers/Dhaouadi/OrthoLoC/).
+- [x] **Automated Downloading:** Scripts now support on-demand dataset downloading.
+- [x] **Fixed Data Loading:** 26.01.2026 - Resolved [issues with data loading](https://github.com/deepscenario/OrthoLoC/issues/4).
+- [x] **Pose Offset Fix:** 04.02.2026 - Fixed pose offset bug in `L06_*` samples.
+
+
 <!-- Table of Contents -->
 
 # :notebook_with_decorative_cover: Table of Contents
 
+- [🆕 Updates](#Updates)
 - [⭐ About the Project](#About-the-Project)
 - [🔍 Dataset Features](#Dataset-Features)
 - [📊 Dataset Samples](#Dataset-Samples)
