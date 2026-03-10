@@ -183,6 +183,27 @@ Our dataset is available here: [OrthoLoC Dataset](https://cvg.cit.tum.de/webshar
   your desired path.
 - Not setting `--dataset_dir` in the scripts will automatically download the dataset (on-demand) to the cache directory.
 
+#### Bulk Download via Shell Script
+
+You can use the provided `download_dataset.sh` script to download the full dataset in parallel:
+
+```bash
+# Download with 4 parallel workers (default) to ./OrthoLoC_dataset
+./download_dataset.sh
+
+# Custom output directory and 8 parallel workers
+./download_dataset.sh /path/to/save 8
+```
+
+The script skips already-downloaded files, so it can safely be resumed if interrupted.
+
+#### Bulk Download via Python
+
+```python
+from ortholoc.dataset import OrthoLoC
+dataset = OrthoLoC(predownload=True)  # downloads all samples to cache
+```
+
 ### :file_folder: Structure of the Dataset
 
 <a name="Structure-of-the-Dataset"></a>
